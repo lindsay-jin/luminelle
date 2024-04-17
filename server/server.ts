@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars -- Remove when used */
 import 'dotenv/config';
 import express from 'express';
-import pg from 'pg';
+import pg, { Client } from 'pg';
 import {
   ClientError,
   defaultMiddleware,
@@ -29,9 +29,76 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello, World!' });
+app.get('/api/categories', async (req, res, next) => {
+  try {
+    const sql = `
+      select * from "category"
+      order by "categoryId";
+    `;
+    const result = await db.query(sql);
+    const categories = result.rows;
+    res.json(categories);
+  } catch (err) {
+    next(err);
+  }
 });
+
+app.get('/api/categories/:categoryId/subcategories', async (req, res, next) => {
+  try {
+    const { categoryId } = req.params;
+    const sql = `
+      select * from "subcategory"
+      where "categoryId" = $1
+      order by "subcategoryId";
+    `;
+    const params = [categoryId];
+    const result = await db.query(sql, params);
+    const subcategories = result.rows;
+    res.json(subcategories);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get(
+  '/api/categories/:categoryId/subcategories/:subcategoryId/products',
+  async (req, res, next) => {
+    try {
+      const { categoryId, subcategoryId } = req.params;
+      const sql = `
+      select * from "product"
+      where "categoryId" = $1 and "subcategoryId" = $2
+      order by "productId";
+    `;
+      const params = [categoryId, subcategoryId];
+      const result = await db.query(sql, params);
+      const products = result.rows;
+      res.json(products);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.get(
+  '/api/categories/:categoryId/subcategories/:subcategoryId/products/:productId',
+  async (req, res, next) => {
+    try {
+      const { categoryId, subcategoryId, productId } = req.params;
+      const sql = `
+      select * from "product"
+      where "categoryId" = $1 and "subcategoryId" = $2 and "productId" = $3;
+    `;
+      const params = [categoryId, subcategoryId, productId];
+      const result = await db.query(sql, params);
+      const [product] = result.rows;
+      if (!product) throw new ClientError(404, 'Product not found.');
+      res.json(product);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 /*
  * Middleware that handles paths that aren't handled by static middleware
