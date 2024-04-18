@@ -1,33 +1,28 @@
 import { Route, Routes } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
 import { Home } from './pages/Home';
-import './App.css';
-import { ReadyToWear } from './pages/ReadyToWear';
-import { Subcategory } from './pages/Subcategory';
-import { Gifts } from './pages/Gifts';
-import { LumiClub } from './pages/LumiClub';
-import { Product } from './pages/Product';
+import { Subheader } from './pages/Subheader';
 import { NotFound } from './pages/NotFound';
+import { Catalog } from './pages/Catalog';
+import { Details } from './pages/Details';
+import './App.css';
+
+const categories = [
+  { name: 'READY TO WEAR', path: '/catalog/1' },
+  { name: 'GIFTS', path: '/catalog/2' },
+  { name: 'LUMI CLUB', path: '/catalog/3' },
+];
 
 export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigation />}>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/ready-to-wear" element={<ReadyToWear />}>
-            <Route index element={<Subcategory />} />
-            <Route path="dresses" element={<Subcategory />} />
-            <Route path="shirts-and-tops" element={<Subcategory />} />
-            <Route path="outerwear" element={<Subcategory />} />
+        <Route path="/" element={<Navigation categories={categories} />}>
+          <Route index element={<Home />} />
+          <Route path="catalog/:categoryId" element={<Subheader />}>
+            <Route index element={<Catalog />} />
+            <Route path="p/:productId" element={<Details />} />
           </Route>
-          <Route path="/gifts" element={<Gifts />}>
-            <Route index element={<Subcategory />} />
-            <Route path="accessories" element={<Subcategory />} />
-            <Route path="hats" element={<Subcategory />} />
-          </Route>
-          <Route path="/lumi-club" element={<LumiClub />} />
-          <Route path="p/:productId" element={<Product />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
