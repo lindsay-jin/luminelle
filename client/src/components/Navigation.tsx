@@ -8,12 +8,12 @@ import { IoMdHeartEmpty } from 'react-icons/io';
 import { IoBagOutline } from 'react-icons/io5';
 import { useState } from 'react';
 // import { IoBag } from "react-icons/io5";
-import './Navigation.css'
+import './Navigation.css';
 
 export type Subcategory = {
   name: string;
   path: string;
-}
+};
 
 export type Category = {
   name: string;
@@ -27,25 +27,30 @@ type Props = {
 };
 
 export function Navigation({ categories }: Props) {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  function handleMouseOver(categoryName: string){
+  function handleMouseOver(categoryName: string) {
     setActiveCategory(categoryName);
   }
 
-  function handleMouseLeave(){
+  function handleMouseLeave() {
     setActiveCategory(null);
   }
 
   return (
     <>
       <div>
-        <h1>LUMINELLE</h1>
+        <div>
+          <h1>LUMINELLE</h1>
+        </div>
         <nav>
           <div>
             <ul>
               {categories.map((category) => (
-                <li key={category.name} onMouseOver={()=>handleMouseOver(category.name)} onMouseLeave={()=>handleMouseLeave}>
+                <li
+                  key={category.name}
+                  onMouseOver={() => handleMouseOver(category.name)}
+                  onMouseLeave={() => handleMouseLeave}>
                   <Link to={category.path}>{category.name}</Link>
                   {activeCategory === category.name && (
                     <div className="dropdown">
