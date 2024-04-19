@@ -5,24 +5,23 @@ import { Subheader } from './pages/Subheader';
 import { NotFound } from './pages/NotFound';
 import { Catalog } from './pages/Catalog';
 import { Details } from './pages/Details';
-import './App.css';
 
 const categories = [
   {
     name: 'READY TO WEAR',
     path: '/catalog/1',
     subcategories: [
-      { name: 'Dresses', path: '/catalog/1/dresses' },
-      { name: 'Shirts and tops', path: '/catalog/1/shirts-and-tops' },
-      { name: 'Outerwear', path: '/catalog/1/outerwear' },
+      { name: 'Dresses', path: '/catalog/1/1' },
+      { name: 'Shirts and tops', path: '/catalog/1/2' },
+      { name: 'Outerwear', path: '/catalog/1/3' },
     ],
   },
   {
     name: 'GIFTS',
     path: '/catalog/2',
     subcategories: [
-      { name: 'Accessories', path: '/catalog/2/accessories' },
-      { name: 'Hats', path: '/catalog/2/hats' },
+      { name: 'Accessories', path: '/catalog/2/4' },
+      { name: 'Hats', path: '/catalog/2/5' },
     ],
   },
   {
@@ -36,13 +35,11 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Navigation categories={categories} />
-          }>
+        <Route path="/" element={<Navigation categories={categories} />}>
           <Route index element={<Home />} />
-          <Route path="catalog/:categoryId" element={<Subheader categories={categories}/>}>
+          <Route
+            path="catalog/:categoryId"
+            element={<Subheader categories={categories} />}>
             <Route index element={<Catalog />} />
             <Route path=":subcategoryId" element={<Catalog />} />
             <Route path="p/:productId" element={<Details />} />

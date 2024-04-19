@@ -8,10 +8,10 @@ export function Home() {
     <div>
       {landingImages.map((image) => (
         <img
+          className="w-screen"
           key={image.name}
           src={image.imageUrl}
           alt={image.name}
-          style={{ width: '1000px' }}
         />
       ))}
     </div>

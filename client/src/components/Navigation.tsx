@@ -1,14 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
-import { HiOutlineUser } from 'react-icons/hi2';
-// import { HiUser } from 'react-icons/hi2';
-import { IoIosSearch } from 'react-icons/io';
-import { IoMdHeartEmpty } from 'react-icons/io';
+import { FaRegUser } from 'react-icons/fa6';
+// import { FaUser } from 'react-icons/fa6';
+import { IoSearch } from 'react-icons/io5';
+import { FaRegHeart } from 'react-icons/fa6';
 // import { IoMdHeart } from "react-icons/io";
 import { IoBagOutline } from 'react-icons/io5';
 import { useState } from 'react';
 // import { IoBag } from "react-icons/io5";
-import './Navigation.css';
 
 export type Subcategory = {
   name: string;
@@ -21,41 +20,49 @@ export type Category = {
   subcategories: Subcategory[];
 };
 
-//used for
 type Props = {
   categories: Category[];
 };
 
 export function Navigation({ categories }: Props) {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
 
-  function handleMouseOver(categoryName: string) {
-    setActiveCategory(categoryName);
+  function handleMouseOver() {
+    setIsOpen(true);
   }
 
   function handleMouseLeave() {
-    setActiveCategory(null);
+    setIsOpen(false);
   }
 
   return (
     <>
       <div>
         <div>
-          <h1>LUMINELLE</h1>
+          <h1
+            className="text-6xl text-center mt-3 mb-5 cursor-pointer"
+            onClick={() => navigate('/')}>
+            LUMINELLE
+          </h1>
         </div>
-        <nav>
+        <nav className="flex justify-between pb-1">
           <div>
-            <ul>
+            <ul className="flex pl-5">
               {categories.map((category) => (
                 <li
+                  className="relative pr-7 cursor-pointer"
                   key={category.name}
-                  onMouseOver={() => handleMouseOver(category.name)}
-                  onMouseLeave={() => handleMouseLeave}>
-                  <Link to={category.path}>{category.name}</Link>
-                  {activeCategory === category.name && (
-                    <div className="dropdown">
+                  onMouseOver={handleMouseOver}
+                  onMouseLeave={handleMouseLeave}>
+                  {category.name}
+                  {isOpen && (
+                    <div className="absolute z-10 bg-white w-screen">
                       {category.subcategories.map((subcategory) => (
-                        <Link key={subcategory.name} to={subcategory.path}>
+                        <Link
+                          className="block px-4 py-2 text-black"
+                          key={subcategory.name}
+                          to={subcategory.path}>
                           {subcategory.name}
                         </Link>
                       ))}
@@ -65,15 +72,15 @@ export function Navigation({ categories }: Props) {
               ))}
             </ul>
           </div>
-          <div>
-            <HiOutlineUser />
-            <IoIosSearch />
-            <IoMdHeartEmpty />
-            <IoBagOutline />
+          <div className="flex pr-3">
+            <FaRegUser className="flex mr-3 cursor-pointer" />
+            <IoSearch className="flex mr-3 cursor-pointer" />
+            <FaRegHeart className="flex mr-3 cursor-pointer" />
+            <IoBagOutline className="cursor-pointer" />
           </div>
         </nav>
       </div>
-      <div className="outlet">
+      <div>
         <Outlet />
       </div>
     </>
