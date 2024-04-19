@@ -1,0 +1,11 @@
+.dropdown {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 8px 16px black;
+  z-index: 1;
+}
+
+li:hover > .dropdown {
+  display: block;
+}

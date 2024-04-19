@@ -1,9 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+
 
 export function Catalog() {
+  const {subcategoryId} = useParams();
   return (
     <>
-      <Outlet></Outlet>
+      <div>
+
+      </div>
     </>
   );
 }
