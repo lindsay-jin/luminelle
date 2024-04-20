@@ -3,11 +3,11 @@ import { type Category } from '../components/Navigation';
 
 type Props = {
   categories: Category[];
-}
+};
 
-export function Subheader({categories} :Props) {
-  const {categoryId} = useParams<{categoryId: string}>();
-  if(!categoryId){
+export function Subheader({ categories }: Props) {
+  const { categoryId } = useParams<{ categoryId: string }>();
+  if (!categoryId) {
     return <div>Category not found.</div>;
   }
   const currentCategory = categories.find((category) =>
@@ -16,22 +16,23 @@ export function Subheader({categories} :Props) {
 
   const currentSubcategories = currentCategory?.subcategories;
 
-  if(!currentSubcategories){
+  if (!currentSubcategories) {
     return <div>Category not found.</div>;
   }
   return (
     <>
       <div>
-        <h1></h1>
-        <ul>
+        <hr className="mb-3 border" />
+        <ul className="flex">
           {currentSubcategories.map((subcategory) => (
-            <li key={subcategory.name}>
+            <li key={subcategory.name} className="pl-5 pr-9">
               <Link to={subcategory.path}>{subcategory.name}</Link>
             </li>
           ))}
         </ul>
+        <hr className="mt-3 mb-7 border" />
       </div>
-      <div className="outlet">
+      <div>
         <Outlet />
       </div>
     </>

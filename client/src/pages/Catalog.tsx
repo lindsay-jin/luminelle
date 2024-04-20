@@ -69,11 +69,11 @@ function ProductCard({ product }: Props) {
   return (
     <Link
       to={`/catalog/${categoryId}/p/${productId}`}
-      className="flex flex-col">
+      className="flex flex-col w-1/4">
       <div>
         <img src={imageUrl} alt={name} />
       </div>
-      <div>
+      <div className="text-center">
         <p>{name}</p>
         <p>{toDollars(price)}</p>
       </div>
