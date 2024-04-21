@@ -6,6 +6,10 @@ export default {
       aspectRatio: {
         '5/6': [5, 6],
       },
+      margin: {
+        40: '40px',
+        120: '120px',
+      },
     },
   },
   plugins: [],

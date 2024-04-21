@@ -26,7 +26,7 @@ export function Subheader({ categories }: Props) {
   return (
     <>
       <div>
-        <hr className="mb-3 border" />
+        <hr className="my-3 border" />
         <ul className="flex">
           {currentSubcategories.map((subcategory) => (
             <li key={subcategory.name} className="pl-5 pr-9">
