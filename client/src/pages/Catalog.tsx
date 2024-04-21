@@ -49,7 +49,7 @@ export function Catalog() {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex flex-wrap mx-0.5">
         {products?.map((product) => (
           <ProductCard key={product.productId} product={product} />
         ))}
@@ -69,15 +69,14 @@ function ProductCard({ product }: Props) {
   return (
     <Link
       to={`/catalog/${categoryId}/p/${productId}`}
-      className="flex flex-col w-1/4">
-      <div>
-        <img src={imageUrl} alt={name} />
+      className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500">
+      <div className="aspect-w-5 aspect-h-6 w-full ">
+        <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
       </div>
-      <div className="text-center">
+      <div className="text-center pt-3 pb-7">
         <p>{name}</p>
         <p>{toDollars(price)}</p>
       </div>
     </Link>
   );
 }
-//

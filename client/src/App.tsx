@@ -24,11 +24,6 @@ const categories = [
       { name: 'Hats', path: '/catalog/2/5' },
     ],
   },
-  {
-    name: 'LUMI CLUB',
-    path: '/catalog/3',
-    subcategories: [],
-  },
 ];
 
 export default function App() {

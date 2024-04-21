@@ -25,15 +25,15 @@ type Props = {
 };
 
 export function Navigation({ categories }: Props) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  function handleMouseOver() {
-    setIsOpen(true);
+  function handleMouseOver(categoryName: string) {
+    setActiveCategory(categoryName);
   }
 
   function handleMouseLeave() {
-    setIsOpen(false);
+    setActiveCategory(null);
   }
 
   return (
@@ -53,14 +53,14 @@ export function Navigation({ categories }: Props) {
                 <li
                   className="relative pr-7 cursor-pointer"
                   key={category.name}
-                  onMouseOver={handleMouseOver}
+                  onMouseOver={() => handleMouseOver(category.name)}
                   onMouseLeave={handleMouseLeave}>
                   {category.name}
-                  {isOpen && (
-                    <div className="absolute z-10 bg-white w-screen">
+                  {activeCategory === category.name && (
+                    <div className="absolute z-10 bg-white w-full left-0 right-0">
                       {category.subcategories.map((subcategory) => (
                         <Link
-                          className="block px-4 py-2 text-black"
+                          className="block px-4 py-2"
                           key={subcategory.name}
                           to={subcategory.path}>
                           {subcategory.name}
