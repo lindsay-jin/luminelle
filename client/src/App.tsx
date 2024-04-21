@@ -1,35 +1,47 @@
-import { useEffect, useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { Navigation } from './components/Navigation';
+import { Home } from './pages/Home';
+import { Subheader } from './pages/Subheader';
+import { NotFound } from './pages/NotFound';
+import { Catalog } from './pages/Catalog';
+import { Details } from './pages/Details';
+
+const categories = [
+  {
+    name: 'READY TO WEAR',
+    path: '/catalog/1',
+    subcategories: [
+      { name: 'Dresses', path: '/catalog/1/1' },
+      { name: 'Shirts and tops', path: '/catalog/1/2' },
+      { name: 'Outerwear', path: '/catalog/1/3' },
+    ],
+  },
+  {
+    name: 'GIFTS',
+    path: '/catalog/2',
+    subcategories: [
+      { name: 'Accessories', path: '/catalog/2/4' },
+      { name: 'Hats', path: '/catalog/2/5' },
+    ],
+  },
+];
 
 export default function App() {
-  const [serverData, setServerData] = useState('');
-
-  useEffect(() => {
-    async function readServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
-
-      console.log('Data from server:', data);
-
-      setServerData(data.message);
-    }
-
-    readServerData();
-  }, []);
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>{serverData}</h1>
+      <Routes>
+        <Route path="/" element={<Navigation categories={categories} />}>
+          <Route index element={<Home />} />
+          <Route
+            path="catalog/:categoryId"
+            element={<Subheader categories={categories} />}>
+            <Route index element={<Catalog />} />
+            <Route path=":subcategoryId" element={<Catalog />} />
+            <Route path="p/:productId" element={<Details />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
     </>
   );
 }

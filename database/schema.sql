@@ -29,7 +29,7 @@ CREATE TABLE "product" (
   "name" text,
   "description" text,
   "color" text,
-  "size" int,
+  "size" text,
   "material" text,
   "imageUrl" text,
   "price" int,
