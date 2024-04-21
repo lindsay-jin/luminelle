@@ -81,15 +81,15 @@ app.get(
 );
 
 app.get(
-  '/api/categories/:categoryId/subcategories/:subcategoryId/products/:productId',
+  '/api/p/:productId',
   async (req, res, next) => {
     try {
-      const { categoryId, subcategoryId, productId } = req.params;
+      const {productId } = req.params;
       const sql = `
       select * from "product"
-      where "categoryId" = $1 and "subcategoryId" = $2 and "productId" = $3;
+      where "productId" = $1;
     `;
-      const params = [categoryId, subcategoryId, productId];
+      const params = [productId];
       const result = await db.query(sql, params);
       const [product] = result.rows;
       if (!product) throw new ClientError(404, 'Product not found.');
