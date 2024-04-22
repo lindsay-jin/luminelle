@@ -93,6 +93,7 @@ app.get(
       const result = await db.query(sql, params);
       const [product] = result.rows;
       if (!product) throw new ClientError(404, 'Product not found.');
+      product.sizes = JSON.parse(product.size);
       res.json(product);
     } catch (err) {
       next(err);
