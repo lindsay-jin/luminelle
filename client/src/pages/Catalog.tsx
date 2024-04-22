@@ -13,7 +13,7 @@ export function Catalog() {
   const [products, setProducts] = useState<Product[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
-  const { categoryId, subcategoryId } = useParams();
+  const { categoryId, subcategoryId } = useParams<{categoryId: string, subcategoryId: string}>()
 
   useEffect(() => {
     async function loadProducts() {
@@ -64,7 +64,7 @@ type Props = {
 
 function ProductCard({ product }: Props) {
   const { productId, imageUrl, name, price } = product;
-  const { categoryId } = useParams();
+  const { categoryId } = useParams<{categoryId: string}>();
 
   return (
     <Link

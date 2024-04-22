@@ -49,6 +49,7 @@ CREATE TABLE "cart" (
   "userId" int,
   "productId" int,
   "quantity" int,
+  "size" text,
   "createdAt" timestamptz DEFAULT 'now()'
 );
 
