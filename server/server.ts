@@ -80,44 +80,42 @@ app.get(
   }
 );
 
-app.get(
-  '/api/p/:productId',
-  async (req, res, next) => {
-    try {
-      const {productId } = req.params;
-      const sql = `
+app.get('/api/p/:productId', async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const sql = `
       select * from "product"
       where "productId" = $1;
     `;
-      const params = [productId];
-      const result = await db.query(sql, params);
-      const [product] = result.rows;
-      if (!product) throw new ClientError(404, 'Product not found.');
-      product.sizes = JSON.parse(product.size);
-      res.json(product);
-    } catch (err) {
-      next(err);
-    }
+    const params = [productId];
+    const result = await db.query(sql, params);
+    const [product] = result.rows;
+    if (!product) throw new ClientError(404, 'Product not found.');
+    product.sizes = JSON.parse(product.size);
+    res.json(product);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
-app.get('/api/catalog', async(req, res, next)=> {
+app.get('/api/catalog', async (req, res, next) => {
   try {
-    const  searchQuery = req.query.q;
-    if(!searchQuery){
+    const searchQuery = req.query.q;
+    if (!searchQuery) {
       return res.json([]);
     }
     const sql = `
       select * from "product"
-      where name LIKE $1
-    `
-    const params = [`%${searchQuery}%`]
+      where name LIKE $1 or description like $1
+    `;
+    const params = [`%${searchQuery}%`];
     const result = await db.query(sql, params);
-    const products = result.rows
-    if (!products || products.length === 0) throw new ClientError(404, 'No matching product found.');
+    const products = result.rows;
+    if (!products || products.length === 0)
+      throw new ClientError(404, 'No matching product found.');
     res.json(products);
-  }catch(error){
-    next(error)
+  } catch (error) {
+    next(error);
   }
 });
 

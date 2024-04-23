@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
-import { type Product } from '../pages/Catalog';
+import { ProductCard, type Product } from '../pages/Catalog';
 import { FaRegUser } from 'react-icons/fa6';
 // import { FaUser } from 'react-icons/fa6';
 import { IoSearch } from 'react-icons/io5';
@@ -167,15 +167,20 @@ export function Navigation({ categories }: Props) {
               </div>
             </div>
           )}
+          {/*  */}
           {isSearching && searchResults.length > 0 && (
-            <div className="fixed top-74 inset-x-0 z-40 bg-white">
-              <ul className="max-w-7xl mx-auto p-4 space-y-2">
-                {searchResults.map((product) => (
-                  <li key={product.productId} className="p-2">
-                    {product.name}
-                  </li>
-                ))}
-              </ul>
+            <div className="fixed top-16 inset-x-0 z-40 bg-white">
+              <div className="max-w-7xl mx-auto p-4 space-y-2">
+                <div className="flex">
+                  {searchResults.map((product) => (
+                    <ProductCard
+                      key={product.productId}
+                      product={product}
+                      onClick={toggleSearch}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </nav>
