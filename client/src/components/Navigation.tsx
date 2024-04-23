@@ -183,6 +183,13 @@ export function Navigation({ categories }: Props) {
               </div>
             </div>
           )}
+          {isSearching && searchText && searchResults.length === 0 && (
+            <div className="fixed top-16 inset-x-0 z-40 bg-white">
+              <div className="max-w-7xl mx-auto p-4 space-y-2">
+                <div>No matching product found.</div>
+              </div>
+            </div>
+          )}
         </nav>
       </div>
       {isLoading && <div>Loading...</div>}
@@ -192,3 +199,5 @@ export function Navigation({ categories }: Props) {
     </>
   );
 }
+
+//

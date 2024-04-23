@@ -106,7 +106,7 @@ app.get('/api/catalog', async (req, res, next) => {
     }
     const sql = `
       select * from "product"
-      where name LIKE $1 or description like $1
+      where name ilike $1 or description ilike $1
     `;
     const params = [`%${searchQuery}%`];
     const result = await db.query(sql, params);
