@@ -31,7 +31,7 @@ export function Navigation({ categories }: Props) {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,9 +81,9 @@ export function Navigation({ categories }: Props) {
     return () => clearTimeout(timerId);
   }, [searchText]);
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return (
