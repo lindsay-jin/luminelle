@@ -12,7 +12,9 @@ export type ProductDetails = {
   name: string;
   price: number;
   color: string;
+  material: string;
   sizes: string[];
+  description: string;
 };
 
 export function Details() {
@@ -20,6 +22,7 @@ export function Details() {
   const [details, setDetails] = useState<ProductDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     async function loadDetails() {
@@ -57,7 +60,8 @@ export function Details() {
     return <div>No product details available.</div>;
   }
 
-  const { name, imageUrl, price, color, sizes } = details;
+  const { name, imageUrl, price, color, material, sizes, description } =
+    details;
   const colors = {
     black: '000000',
     white: 'ffffff',
@@ -70,8 +74,31 @@ export function Details() {
     green: '#16a34a',
     blue: '#0ea5e9',
   };
+
+  function toggleMenu() {
+    setIsOpen(!isOpen);
+  }
+
   return (
     <div className="flex">
+      {isOpen && (
+        <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+          <button className="mr-2 my-4 self-end underline" onClick={toggleMenu}>
+            CLOSE
+          </button>
+          <div className="m-4">
+            <div className="m-4">
+              <h2 className="text-lg font-medium">Product Details</h2>
+              <p>{description}</p>
+            </div>
+            <hr className="border" />
+            <div className="m-4">
+              <h2 className="text-lg font-medium">Materials</h2>
+              <p>{material}</p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="w-1/2 relative">
         <img src={imageUrl} alt={name} />
         <FaRegHeart className="absolute top-5 right-5" />
@@ -106,7 +133,9 @@ export function Details() {
             Add to bag
           </button>
         </div>
-        <p className="underline my-6 cursor-pointer">Product details</p>
+        <p className="underline my-6 cursor-pointer" onClick={toggleMenu}>
+          Product details
+        </p>
       </div>
     </div>
   );
