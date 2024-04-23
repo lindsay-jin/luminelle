@@ -12,8 +12,12 @@ export type Product = {
 export function Catalog() {
   const [products, setProducts] = useState<Product[]>();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<unknown>();
-  const { categoryId, subcategoryId } = useParams<{categoryId: string, subcategoryId: string}>()
+  const { categoryId, subcategoryId } = useParams<{
+    categoryId: string;
+    subcategoryId: string;
+  }>();
 
   useEffect(() => {
     async function loadProducts() {
@@ -47,29 +51,39 @@ export function Catalog() {
     );
   }
 
+  function toggleSearch() {
+    setIsSearching(!isSearching);
+  }
+
   return (
     <>
       <div className="flex flex-wrap mx-0.5">
         {products?.map((product) => (
-          <ProductCard key={product.productId} product={product} />
+          <ProductCard
+            key={product.productId}
+            product={product}
+            onClick={toggleSearch}
+          />
         ))}
       </div>
     </>
   );
 }
 
-type Props = {
+export type Props = {
   product: Product;
+  onClick: () => void;
 };
 
-function ProductCard({ product }: Props) {
+export function ProductCard({ product, onClick }: Props) {
   const { productId, imageUrl, name, price } = product;
-  const { categoryId } = useParams<{categoryId: string}>();
+  const { categoryId } = useParams<{ categoryId: string }>();
 
   return (
     <Link
       to={`/catalog/${categoryId}/p/${productId}`}
-      className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500">
+      className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
+      onClick={onClick}>
       <div className="aspect-w-5 aspect-h-6 w-full ">
         <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
       </div>
