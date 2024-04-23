@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import { type Product } from '../pages/Catalog';
 import { FaRegUser } from 'react-icons/fa6';
 // import { FaUser } from 'react-icons/fa6';
 import { IoSearch } from 'react-icons/io5';
@@ -28,7 +29,9 @@ export function Navigation({ categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [error, setError] = useState();
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [error, setError] = useState<unknown>();
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -42,7 +45,7 @@ export function Navigation({ categories }: Props) {
     setActiveCategory(null);
   }
 
-  function toggleSearch(){
+  function toggleSearch() {
     setIsSearching(!isSearching);
   }
 
@@ -50,13 +53,46 @@ export function Navigation({ categories }: Props) {
     setSearchText(event.target.value);
   }
 
-  useEffect(()=>{
-    try{
-
-    }catch(error){
-
+  useEffect(() => {
+    if (searchText.length < 3) {
+      setSearchResults([]);
+      return;
     }
-  })
+
+    const timerId = setTimeout(() => {
+      setIsLoading(true);
+      async function loadSearchResults() {
+        try {
+          const response = await fetch(`/api/catalog?q=${searchText}`);
+          if (!response.ok)
+            throw new Error(`Fetch error with status ${response.status}`);
+          const result = await response.json();
+          setSearchResults(result);
+        } catch (error) {
+          setError(error);
+          setSearchResults([]);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+      loadSearchResults();
+    }, 2000);
+
+    return () => clearTimeout(timerId);
+  }, [searchText]);
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  if (error) {
+    return (
+      <div>
+        Cannot load products due to{' '}
+        {error instanceof Error ? error.message : 'unknown error'}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -114,27 +150,37 @@ export function Navigation({ categories }: Props) {
             <IoBagOutline className="cursor-pointer mx-2" />
           </div>
           {isSearching && (
-            <div className="fixed mt-10 z-50 w-screen bg-white flex flex-col">
-              <div className="flex justify-between w-screen pr-10">
+            <div className="fixed top-0 inset-x-0 z-50 bg-white shadow">
+              <div className="flex w-full">
                 <input
                   type="text"
                   placeholder="Search"
                   value={searchText}
                   onChange={handleType}
-                  className="w-full h-full p-4"
+                  className="flex-grow p-2 mx-5 my-3 border border-gray-300 rounded-md focus:ring-2"
                 />
                 <button
                   onClick={() => setIsSearching(false)}
-                  className="underline">
+                  className="w-auto p-2 mr-5 my-3 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
                   CLOSE
                 </button>
               </div>
-              <hr className="my-3 border" />
-              <div>Hello</div>
+            </div>
+          )}
+          {isSearching && searchResults.length > 0 && (
+            <div className="fixed top-74 inset-x-0 z-40 bg-white">
+              <ul className="max-w-7xl mx-auto p-4 space-y-2">
+                {searchResults.map((product) => (
+                  <li key={product.productId} className="p-2">
+                    {product.name}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </nav>
       </div>
+      {isLoading && <div>Loading...</div>}
       <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>
         <Outlet />
       </div>
