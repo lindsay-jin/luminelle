@@ -92,6 +92,8 @@ app.get('/api/p/:productId', async (req, res, next) => {
     const [product] = result.rows;
     if (!product) throw new ClientError(404, 'Product not found.');
     product.sizes = JSON.parse(product.size);
+    product.materials = JSON.parse(product.material);
+    product.colors = JSON.parse(product.color);
     res.json(product);
   } catch (err) {
     next(err);

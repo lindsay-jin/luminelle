@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { FaRegHeart } from 'react-icons/fa6';
 // import { IoMdHeart } from "react-icons/io";
 import { FaCircle } from 'react-icons/fa';
-import { FaRegCircle } from 'react-icons/fa';
 import { toDollars } from '../../lib/to-dollars';
 
 export type ProductDetails = {
@@ -11,8 +10,8 @@ export type ProductDetails = {
   imageUrl: string;
   name: string;
   price: number;
-  color: string;
-  material: string;
+  colors: string[];
+  materials: string[];
   sizes: string[];
   description: string;
 };
@@ -56,9 +55,9 @@ export function Details() {
     );
   }
 
-  const { name, imageUrl, price, color, material, sizes, description } =
-    details;
-  const colors = {
+
+  const { name, imageUrl, price, colors, materials, sizes, description } = details;
+  const customColors = {
     black: '000000',
     white: 'ffffff',
     grey: '#9ca3af',
@@ -90,7 +89,7 @@ export function Details() {
             <hr className="border" />
             <div className="m-4">
               <h2 className="text-lg font-medium">Materials</h2>
-              <p>{material}</p>
+              <p>{materials}</p>
             </div>
           </div>
         </div>
@@ -106,12 +105,14 @@ export function Details() {
           <hr className="pb-3" />
         </div>
         <div className="mb-3">
-          <p className="pb-3">COLOR: {color}</p>
-          {colors[color] === 'white' ? (
-            <FaRegCircle color={colors[color]} className="my-3" />
-          ) : (
-            <FaCircle color={colors[color]} className="my-3" />
-          )}
+          <p className="pb-3">COLOR: {colors}</p>
+          {colors.map((color) => (
+            <FaCircle
+              key={color}
+              color={customColors[color]}
+              className="my-3"
+            />
+          ))}
           <hr className="my-3" />
         </div>
         <div className="mb-2">
