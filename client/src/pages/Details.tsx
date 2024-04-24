@@ -19,7 +19,7 @@ export type ProductDetails = {
 
 export function Details() {
   const { productId } = useParams<{ productId: string }>();
-  const [details, setDetails] = useState<ProductDetails | null>(null);
+  const [details, setDetails] = useState<ProductDetails>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [isOpen, setIsOpen] = useState(false);
@@ -47,17 +47,13 @@ export function Details() {
     return <div>Loading...</div>;
   }
 
-  if (error) {
+  if (error || !details) {
     return (
       <div>
         Cannot load product details due to{' '}
         {error instanceof Error ? error.message : 'unknown error'}.
       </div>
     );
-  }
-
-  if (!details) {
-    return <div>No product details available.</div>;
   }
 
   const { name, imageUrl, price, color, material, sizes, description } =
