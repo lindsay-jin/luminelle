@@ -111,8 +111,6 @@ app.get('/api/catalog', async (req, res, next) => {
     const params = [`%${searchQuery}%`];
     const result = await db.query(sql, params);
     const products = result.rows;
-    if (!products || products.length === 0)
-      throw new ClientError(404, 'No matching product found.');
     res.json(products);
   } catch (error) {
     next(error);
