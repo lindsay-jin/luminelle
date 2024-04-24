@@ -129,7 +129,7 @@ export function Navigation({ categories }: Props) {
                 className="relative cursor-pointer px-4 py-2">
                 {category.name}
                 {activeCategory === category.name && (
-                  <div className="absolute z-10 bg-white w-full left-0">
+                  <div className="absolute right-0 top-0 z-10 bg-white w-screen left-0">
                     {category.subcategories.map((subcategory) => (
                       <Link
                         key={subcategory.name}
@@ -171,7 +171,7 @@ export function Navigation({ categories }: Props) {
           {isSearching && searchResults.length > 0 && (
             <div className="fixed top-16 inset-x-0 z-40 bg-white">
               <div className="max-w-7xl mx-auto p-4 space-y-2">
-                <div className="flex">
+                <div className="flex flex-wrap">
                   {searchResults.map((product) => (
                     <ProductCard
                       key={product.productId}
@@ -199,5 +199,3 @@ export function Navigation({ categories }: Props) {
     </>
   );
 }
-
-//
