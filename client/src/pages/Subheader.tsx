@@ -39,7 +39,7 @@ export function Subheader({ categories }: Props) {
             </li>
           ))}
         </ul>
-        <hr className="mt-3 mb-7 border" />
+        <hr className="my-3 border" />
       </div>
       <div>
         <Outlet />
