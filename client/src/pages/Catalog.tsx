@@ -91,7 +91,12 @@ export function Catalog() {
     return colorMatch && sizeMatch && materialMatch;
   });
 
-  const options = ['SUGGESTED', 'NEWEST', 'HIGHEST TO LOWEST PRICE', 'LOWEST TO HIGHEST PRICE'];
+  const options = [
+    'SUGGESTED',
+    'NEWEST',
+    'HIGHEST TO LOWEST PRICE',
+    'LOWEST TO HIGHEST PRICE',
+  ];
 
   useEffect(() => {
     async function loadProducts() {
@@ -166,16 +171,21 @@ export function Catalog() {
     });
   }
 
-  function handleClickSort(){
-    setIsSortOpen(!isSortOpen)
+  function handleClickSort() {
+    setIsSortOpen(!isSortOpen);
   }
 
-  function sortProducts(products){
-    switch (selectOption){
-      case 'NEWEST' : return [...products].sort((a,b)=>b.productId - a.productId);
-      case 'HIGHEST TO LOWEST PRICE': return [...products].sort((a,b)=>b.price - a.price);
-      case 'NEWEST TO HIGHEST PRICE': return [...products].sort((a,b)=>a.price - b.price);
-      case 'SUGGESTED' : default: return products;
+  function sortProducts(products) {
+    switch (selectOption) {
+      case 'NEWEST':
+        return [...products].sort((a, b) => b.productId - a.productId);
+      case 'HIGHEST TO LOWEST PRICE':
+        return [...products].sort((a, b) => b.price - a.price);
+      case 'NEWEST TO HIGHEST PRICE':
+        return [...products].sort((a, b) => a.price - b.price);
+      case 'SUGGESTED':
+      default:
+        return products;
     }
   }
 
@@ -257,7 +267,14 @@ export function Catalog() {
           <div className="absolute right-0 bg-white">
             <ul>
               {options.map((option) => (
-                <li key={option} onClick={()=>handleSelectOption(option)} className={`cursor-pointer ${selectOption.includes(option) && 'bg-slate-500'}`}>{option}</li>
+                <li
+                  key={option}
+                  onClick={() => handleSelectOption(option)}
+                  className={`cursor-pointer hover:bg-slate-300 ${
+                    selectOption.includes(option) && 'bg-slate-500'
+                  }`}>
+                  {option}
+                </li>
               ))}
             </ul>
           </div>
