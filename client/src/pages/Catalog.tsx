@@ -48,11 +48,18 @@ export function Catalog() {
     subcategoryId: string;
   }>();
 
-  const filteredProducts = products?.filter(
-    (product) =>
-      selectColors.length === 0 ||
-      product.colors.some((color) => selectColors.includes(color))
-  );
+  const filteredProducts = products?.filter((product) => {
+    if (selectColors.length === 0) {
+      return true;
+    }
+
+    for (let i = 0; i < product.colors.length; i++) {
+      if (selectColors.includes(product.colors[i])) {
+        return true;
+      }
+    }
+    return false;
+  });
 
   useEffect(() => {
     async function loadProducts() {
@@ -100,7 +107,6 @@ export function Catalog() {
       if (isColorSelected) {
         return prevColors.filter((c) => c !== color);
       } else {
-        console.log('updatedColors:', [...prevColors, color]);
         return [...prevColors, color];
       }
     });
@@ -128,8 +134,9 @@ export function Catalog() {
                   {colorNames.map((color) => (
                     <div
                       key={color}
-                      className={`w-1/2 flex justify-start items-center ${
-                        selectColors.includes(color) && 'bg-gray-300'
+                      className={`w-1/2 flex justify-start items-center cursor-pointer ${
+                        selectColors.includes(color) &&
+                        'border border-slate-500'
                       }`}
                       onClick={() => handleColorClick(color)}>
                       <FaCircle color={customColors[color]} className="m-3" />
@@ -142,7 +149,7 @@ export function Catalog() {
               <h2 className="my-2">SIZES</h2>
               <div className="flex flex-wrap ml-3">
                 {sizes.map((size) => (
-                  <span key={size} className="mr-5">
+                  <span key={size} className="mr-10">
                     {size}
                   </span>
                 ))}
