@@ -8,6 +8,7 @@ export type Product = {
   imageUrl: string;
   name: string;
   price: number;
+  colors: string[];
 };
 
 const customColors = {
@@ -23,6 +24,17 @@ const customColors = {
   blue: '#0ea5e9',
 };
 const colorNames = Object.keys(customColors);
+const sizes = [0, 2, 4, 6, 8, 10, 12, 14];
+const materials = [
+  'silk',
+  'cotton',
+  'linen',
+  'wool',
+  'cashmere',
+  'leather',
+  'suede',
+  'metal',
+];
 
 export function Catalog() {
   const [products, setProducts] = useState<Product[]>();
@@ -30,10 +42,17 @@ export function Catalog() {
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<unknown>();
   const [isOpen, setIsOpen] = useState(false);
+  const [selectColors, setSelectColors] = useState<string[]>([]);
   const { categoryId, subcategoryId } = useParams<{
     categoryId: string;
     subcategoryId: string;
   }>();
+
+  const filteredProducts = products?.filter(
+    (product) =>
+      selectColors.length === 0 ||
+      product.colors.some((color) => selectColors.includes(color))
+  );
 
   useEffect(() => {
     async function loadProducts() {
@@ -75,6 +94,18 @@ export function Catalog() {
     setIsOpen(!isOpen);
   }
 
+  function handleColorClick(color) {
+    setSelectColors((prevColors) => {
+      const isColorSelected = prevColors.includes(color);
+      if (isColorSelected) {
+        return prevColors.filter((c) => c !== color);
+      } else {
+        console.log('updatedColors:', [...prevColors, color]);
+        return [...prevColors, color];
+      }
+    });
+  }
+
   return (
     <>
       <div className="flex justify-end mb-3">
@@ -97,14 +128,34 @@ export function Catalog() {
                   {colorNames.map((color) => (
                     <div
                       key={color}
-                      className="w-1/2 flex justify-start items-center">
+                      className={`w-1/2 flex justify-start items-center ${
+                        selectColors.includes(color) && 'bg-gray-300'
+                      }`}
+                      onClick={() => handleColorClick(color)}>
                       <FaCircle color={customColors[color]} className="m-3" />
                       <li>{color}</li>
                     </div>
                   ))}
                 </ul>
               </div>
-              <hr className="border" />
+              <hr className="border my-3" />
+              <h2 className="my-2">SIZES</h2>
+              <div className="flex flex-wrap ml-3">
+                {sizes.map((size) => (
+                  <span key={size} className="mr-5">
+                    {size}
+                  </span>
+                ))}
+              </div>
+              <hr className="border my-3" />
+              <h2 className="my-2">MATERIALS</h2>
+              <div className="flex flex-wrap ml-3">
+                {materials.map((material) => (
+                  <span key={material} className="w-1/2 mb-3">
+                    {material}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -112,7 +163,7 @@ export function Catalog() {
         <span className="cursor-pointer">SORT BY: </span>
       </div>
       <div className="flex flex-wrap mx-0.5">
-        {products?.map((product) => (
+        {filteredProducts?.map((product) => (
           <ProductCard
             key={product.productId}
             product={product}
