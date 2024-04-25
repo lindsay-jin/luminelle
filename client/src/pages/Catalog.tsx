@@ -47,6 +47,8 @@ export function Catalog() {
   const [selectColors, setSelectColors] = useState<string[]>([]);
   const [selectSizes, setSelectSizes] = useState<string[]>([]);
   const [selectMaterials, setSelectMaterials] = useState<string[]>([]);
+  const [selectOption, setSelectOption] = useState('SUGGESTED');
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const { categoryId, subcategoryId } = useParams<{
     categoryId: string;
     subcategoryId: string;
@@ -88,6 +90,8 @@ export function Catalog() {
 
     return colorMatch && sizeMatch && materialMatch;
   });
+
+  const options = ['SUGGESTED', 'NEWEST', 'HIGHEST TO LOWEST PRICE', 'LOWEST TO HIGHEST PRICE'];
 
   useEffect(() => {
     async function loadProducts() {
@@ -162,12 +166,32 @@ export function Catalog() {
     });
   }
 
+  function handleClickSort(){
+    setIsSortOpen(!isSortOpen)
+  }
+
+  function sortProducts(products){
+    switch (selectOption){
+      case 'NEWEST' : return [...products].sort((a,b)=>b.productId - a.productId);
+      case 'HIGHEST TO LOWEST PRICE': return [...products].sort((a,b)=>b.price - a.price);
+      case 'NEWEST TO HIGHEST PRICE': return [...products].sort((a,b)=>a.price - b.price);
+      case 'SUGGESTED' : default: return products;
+    }
+  }
+
+  const sortedProducts = sortProducts(filteredProducts);
+
+  function handleSelectOption(option) {
+    setSelectOption(option);
+    setIsSortOpen(false);
+  }
+
   return (
     <>
       <div className="flex justify-end mb-3">
-        <span className="pr-2 cursor-pointer" onClick={toggleOpen}>
+        <button className="pr-2" onClick={toggleOpen}>
           FILTERS
-        </span>
+        </button>
         {isOpen && (
           <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
             <div className="flex justify-between m-3">
@@ -227,11 +251,20 @@ export function Catalog() {
             </div>
           </div>
         )}
-        <span className="pr-2">|</span>
-        <span className="cursor-pointer">SORT BY: </span>
+        <button className="pr-2">|</button>
+        <button onClick={handleClickSort}>SORT BY: {selectOption}</button>
+        {isSortOpen && (
+          <div className="absolute right-0 bg-white">
+            <ul>
+              {options.map((option) => (
+                <li key={option} onClick={()=>handleSelectOption(option)} className={`cursor-pointer ${selectOption.includes(option) && 'bg-slate-500'}`}>{option}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <div className="flex flex-wrap mx-0.5">
-        {filteredProducts?.map((product) => (
+        {sortedProducts?.map((product) => (
           <ProductCard
             key={product.productId}
             product={product}
@@ -257,8 +290,12 @@ export function ProductCard({ product, onClick }: Props) {
       to={`/catalog/${categoryId}/p/${productId}`}
       className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
       onClick={onClick}>
-      <div className="aspect-w-5 aspect-h-6 w-full ">
-        <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+      <div className="w-full">
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-full h-full object-cover aspect-[5/6]"
+        />
       </div>
       <div className="text-center pt-3 pb-7">
         <p>{name}</p>
