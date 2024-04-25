@@ -75,6 +75,8 @@ app.get(
       const products = result.rows.map((product) => ({
         ...product,
         colors: product.colors ? JSON.parse(product.colors) : [],
+        sizes: product.sizes ? JSON.parse(product.sizes) : [],
+        materials: product.materials ? JSON.parse(product.materials) : [],
       }));
       res.json(products);
     } catch (err) {

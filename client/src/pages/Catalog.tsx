@@ -9,6 +9,8 @@ export type Product = {
   name: string;
   price: number;
   colors: string[];
+  sizes: string[];
+  materials: string[];
 };
 
 const customColors = {
@@ -24,7 +26,7 @@ const customColors = {
   blue: '#0ea5e9',
 };
 const colorNames = Object.keys(customColors);
-const sizes = [0, 2, 4, 6, 8, 10, 12, 14];
+const sizes = ['0', '2', '4', '6', '8', '10', '12', '14'];
 const materials = [
   'silk',
   'cotton',
@@ -43,22 +45,48 @@ export function Catalog() {
   const [error, setError] = useState<unknown>();
   const [isOpen, setIsOpen] = useState(false);
   const [selectColors, setSelectColors] = useState<string[]>([]);
+  const [selectSizes, setSelectSizes] = useState<string[]>([]);
+  const [selectMaterials, setSelectMaterials] = useState<string[]>([]);
   const { categoryId, subcategoryId } = useParams<{
     categoryId: string;
     subcategoryId: string;
   }>();
 
   const filteredProducts = products?.filter((product) => {
+    let colorMatch = false;
     if (selectColors.length === 0) {
-      return true;
-    }
-
-    for (let i = 0; i < product.colors.length; i++) {
-      if (selectColors.includes(product.colors[i])) {
-        return true;
+      colorMatch = true;
+    } else {
+      for (let i = 0; i < product.colors.length; i++) {
+        if (selectColors.includes(product.colors[i])) {
+          colorMatch = true;
+        }
       }
     }
-    return false;
+
+    let sizeMatch = false;
+    if (selectSizes.length === 0) {
+      sizeMatch = true;
+    } else {
+      for (let i = 0; i < product.sizes.length; i++) {
+        if (selectSizes.includes(product.sizes[i])) {
+          sizeMatch = true;
+        }
+      }
+    }
+
+    let materialMatch = false;
+    if (selectMaterials.length === 0) {
+      materialMatch = true;
+    } else {
+      for (let i = 0; i < product.materials.length; i++) {
+        if (selectMaterials.includes(product.materials[i])) {
+          materialMatch = true;
+        }
+      }
+    }
+
+    return colorMatch && sizeMatch && materialMatch;
   });
 
   useEffect(() => {
@@ -112,6 +140,28 @@ export function Catalog() {
     });
   }
 
+  function handleSizeClick(size: string) {
+    setSelectSizes((prevSizes) => {
+      const isSizeSelected = prevSizes.includes(size);
+      if (isSizeSelected) {
+        return prevSizes.filter((s) => s !== size);
+      } else {
+        return [...prevSizes, size];
+      }
+    });
+  }
+
+  function handleMaterialClick(material) {
+    setSelectMaterials((prevMaterials) => {
+      const isMaterialSelected = prevMaterials.includes(material);
+      if (isMaterialSelected) {
+        return prevMaterials.filter((m) => m !== material);
+      } else {
+        return [...prevMaterials, material];
+      }
+    });
+  }
+
   return (
     <>
       <div className="flex justify-end mb-3">
@@ -149,18 +199,29 @@ export function Catalog() {
               <h2 className="my-2">SIZES</h2>
               <div className="flex flex-wrap ml-3">
                 {sizes.map((size) => (
-                  <span key={size} className="mr-10">
+                  <button
+                    key={size}
+                    className={`mr-10 my-3 ${
+                      selectSizes.includes(size) && 'border border-slate-500'
+                    }`}
+                    onClick={() => handleSizeClick(size)}>
                     {size}
-                  </span>
+                  </button>
                 ))}
               </div>
               <hr className="border my-3" />
               <h2 className="my-2">MATERIALS</h2>
               <div className="flex flex-wrap ml-3">
                 {materials.map((material) => (
-                  <span key={material} className="w-1/2 mb-3">
+                  <button
+                    key={material}
+                    className={`w-1/2 mb-3 ${
+                      selectMaterials.includes(material) &&
+                      'border border-slate-500'
+                    }`}
+                    onClick={() => handleMaterialClick(material)}>
                     {material}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
