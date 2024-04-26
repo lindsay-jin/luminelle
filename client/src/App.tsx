@@ -5,6 +5,8 @@ import { Subheader } from './pages/Subheader';
 import { NotFound } from './pages/NotFound';
 import { Catalog } from './pages/Catalog';
 import { Details } from './pages/Details';
+import { Signup } from './pages/Signup';
+import { Login } from './pages/Login';
 
 const categories = [
   {
@@ -40,6 +42,8 @@ export default function App() {
             <Route path="p/:productId" element={<Details />} />
           </Route>
           <Route path="*" element={<NotFound />} />
+          <Route path="sign-up" element={<Signup />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
     </>

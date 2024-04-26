@@ -9,7 +9,7 @@ create schema "public";
 CREATE TABLE "user" (
   "userId" serial PRIMARY KEY,
   "username" text,
-  "password" text,
+  "hashedPassword" text,
   "createdAt" timestamptz DEFAULT 'now()'
 );
 

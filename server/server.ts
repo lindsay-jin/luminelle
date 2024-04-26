@@ -6,7 +6,21 @@ import {
   ClientError,
   defaultMiddleware,
   errorMiddleware,
+  authMiddleware,
 } from './lib/index.js';
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+
+type User = {
+  userId: number;
+  username: string;
+  hashedPassword: string;
+};
+
+type Auth = {
+  username: string;
+  password: string;
+};
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -19,6 +33,8 @@ const db = new pg.Pool({
 });
 
 const app = express();
+const hashKey = process.env.TOKEN_SECRET;
+if (!hashKey) throw new Error('TOKEN_SECRET not found in .env');
 
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
@@ -119,6 +135,51 @@ app.get('/api/catalog', async (req, res, next) => {
     const result = await db.query(sql, params);
     const products = result.rows;
     res.json(products);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/auth/sign-up', async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password)
+      throw new ClientError(400, 'Username and passwords are required fields.');
+    const hashedPassword = await argon2.hash(password);
+    const sql = `
+      insert into "user" ("username", "hashedPassword")
+      values ($1, $2)
+      returning "userId", "username", "createdAt";
+    `;
+    const params = [username, hashedPassword];
+    const result = await db.query(sql, params);
+    const [rows] = result.rows;
+    console.log('rows', rows);
+    if (!rows) throw new ClientError(404, `Username does not exist`);
+    res.status(201).json(rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/auth/sign-in', async (req, res, next) => {
+  try {
+    const { username, password } = req.body as Partial<Auth>;
+    if (!username || !password) throw new ClientError(401, 'Invalid login.');
+    const sql = `
+      select "userId", "hashedPassword", "username" from "user"
+      where "username" = $1;
+    `;
+    const params = [username];
+    const result = await db.query(sql, params);
+    const [user] = result.rows;
+    if (!user) throw new ClientError(401, 'invalid login');
+    const validPassword = await argon2.verify(user.hashedPassword, password);
+    if (!validPassword) throw new ClientError(401, 'invalid login');
+
+    const payload = { userId: user.userId, username: user.username };
+    const token = jwt.sign(payload, hashKey);
+    res.status(200).json({ user: payload, token });
   } catch (error) {
     next(error);
   }
