@@ -36,6 +36,7 @@ export function Navigation({ categories }: Props) {
   const location = useLocation();
 
   const isHomePage = location.pathname === '/';
+  //const isLoginPage = location.pathname === '/sign-up' || location.pathname === '/log-in';
 
   function handleMouseOver(categoryName: string) {
     setActiveCategory(categoryName);
@@ -144,7 +145,9 @@ export function Navigation({ categories }: Props) {
             ))}
           </ul>
           <div className="flex">
-            <FaRegUser className="cursor-pointer mx-2" />
+            <Link to="/sign-up">
+              <FaRegUser className="cursor-pointer mx-2" />
+            </Link>
             <IoSearch className="cursor-pointer mx-2" onClick={toggleSearch} />
             <FaRegHeart className="cursor-pointer mx-2" />
             <IoBagOutline className="cursor-pointer mx-2" />

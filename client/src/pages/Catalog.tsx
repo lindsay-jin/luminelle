@@ -181,7 +181,7 @@ export function Catalog() {
         return [...products].sort((a, b) => b.productId - a.productId);
       case 'HIGHEST TO LOWEST PRICE':
         return [...products].sort((a, b) => b.price - a.price);
-      case 'NEWEST TO HIGHEST PRICE':
+      case 'LOWEST TO HIGHEST PRICE':
         return [...products].sort((a, b) => a.price - b.price);
       case 'SUGGESTED':
       default:

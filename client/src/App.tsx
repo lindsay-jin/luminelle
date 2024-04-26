@@ -5,6 +5,11 @@ import { Subheader } from './pages/Subheader';
 import { NotFound } from './pages/NotFound';
 import { Catalog } from './pages/Catalog';
 import { Details } from './pages/Details';
+import { Signup } from './pages/Signup';
+import { Login } from './pages/Login';
+import { User, UserProvider } from './components/UserContext';
+import { saveToken } from '../lib/data';
+import { useState } from 'react';
 
 const categories = [
   {
@@ -27,8 +32,25 @@ const categories = [
 ];
 
 export default function App() {
+  const [user, setUser] = useState<User>();
+  const [token, setToken] = useState<string>();
+
+  function handleSignIn(user: User, token: string) {
+    setUser(user);
+    setToken(token);
+    saveToken(token);
+  }
+
+  function handleSignOut() {
+    setUser(undefined);
+    setToken(undefined);
+    saveToken(undefined);
+  }
+
+  const contextValue = { user, token, handleSignIn, handleSignOut };
+
   return (
-    <>
+    <UserProvider value={contextValue}>
       <Routes>
         <Route path="/" element={<Navigation categories={categories} />}>
           <Route index element={<Home />} />
@@ -40,8 +62,10 @@ export default function App() {
             <Route path="p/:productId" element={<Details />} />
           </Route>
           <Route path="*" element={<NotFound />} />
+          <Route path="sign-up" element={<Signup />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
-    </>
+    </UserProvider>
   );
 }
