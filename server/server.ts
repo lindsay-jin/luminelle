@@ -72,7 +72,12 @@ app.get(
     `;
       const params = [categoryId, subcategoryId];
       const result = await db.query(sql, params);
-      const products = result.rows;
+      const products = result.rows.map((product) => ({
+        ...product,
+        colors: product.colors ? JSON.parse(product.colors) : [],
+        sizes: product.sizes ? JSON.parse(product.sizes) : [],
+        materials: product.materials ? JSON.parse(product.materials) : [],
+      }));
       res.json(products);
     } catch (err) {
       next(err);
@@ -91,9 +96,9 @@ app.get('/api/p/:productId', async (req, res, next) => {
     const result = await db.query(sql, params);
     const [product] = result.rows;
     if (!product) throw new ClientError(404, 'Product not found.');
-    product.sizes = JSON.parse(product.size);
-    product.materials = JSON.parse(product.material);
-    product.colors = JSON.parse(product.color);
+    product.sizes = JSON.parse(product.sizes);
+    product.materials = JSON.parse(product.materials);
+    product.colors = JSON.parse(product.colors);
     res.json(product);
   } catch (err) {
     next(err);

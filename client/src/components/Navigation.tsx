@@ -107,7 +107,7 @@ export function Navigation({ categories }: Props) {
           </div>
         )}
         <nav
-          className={`flex justify-between px-5 ${
+          className={`relative flex justify-between px-5 ${
             isHomePage ? '' : 'items-center'
           }`}>
           {!isHomePage && (
@@ -126,15 +126,15 @@ export function Navigation({ categories }: Props) {
                 key={category.name}
                 onMouseOver={() => handleMouseOver(category.name)}
                 onMouseLeave={handleMouseLeave}
-                className="relative cursor-pointer px-4 py-2">
+                className="cursor-pointer px-4 py-2">
                 {category.name}
                 {activeCategory === category.name && (
-                  <div className="absolute left-0 right-0 top-0 z-10 bg-white w-full">
+                  <div className="absolute left-0 right-0 top-10 z-10 bg-white w-full border-t-2 border-slate-300 pt-1">
                     {category.subcategories.map((subcategory) => (
                       <Link
                         key={subcategory.name}
                         to={subcategory.path}
-                        className="block px-4 py-2">
+                        className="block px-4 py-2 focus:underline">
                         {subcategory.name}
                       </Link>
                     ))}

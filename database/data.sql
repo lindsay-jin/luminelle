@@ -7,9 +7,9 @@ values('Dresses', 1), ('Shirts and tops', 1), ('Outerwear', 1);
 insert into "subcategory" ("name", "categoryId")
 values('Accessories', 2), ('Hats', 2);
 
-insert into "product" ("name", "color", "size", "material", "description", "imageUrl", "price", "categoryId", "subcategoryId")
-values ('Pleated stripe dress', '["blue"]', '["0", "2", "4", "6", "8", "10", "12", "14"]', '["cotton"]', 'Sleeveless, high-collar dress with pleated skirt detail in blue stripe.', '/images/blue-stripe-dress1.png', 1100, 1, 1),
-('Sailor collar midi dress', '["green"]', '["0", "2", "4", "6", "8", "10", "12", "14"]', '["silk"]', 'Sleeveless midi dress with sailor collar and belted waist.', '/images/green-dress1.png', 900, 1, 1),
+insert into "product" ("name", "colors", "sizes", "materials", "description", "imageUrl", "price", "categoryId", "subcategoryId")
+values ('Pleated stripe dress', '["blue"]', '["8", "10", "12", "14"]', '["cotton"]', 'Sleeveless, high-collar dress with pleated skirt detail in blue stripe.', '/images/blue-stripe-dress1.png', 1100, 1, 1),
+('Sailor collar midi dress', '["green"]', '["0", "2", "4", "6"]', '["silk"]', 'Sleeveless midi dress with sailor collar and belted waist.', '/images/green-dress1.png', 900, 1, 1),
 ('Plaid mini dress', '["grey"]', '["0", "2", "4", "6", "8", "10", "12", "14"]', '["wool"]', 'Sleeveless mini dress with pleated skirt.', '/images/grey-dress1.png', 650, 1, 1),
 ('Black oversized collar dress', '["black"]', '["0", "2", "4", "6", "8", "10", "12", "14"]', '["wool", "silk"]', 'Black wool dress with oversized collar and buttoned front detail.', '/images/black-dress1.png', 850, 1, 1),
 ('Poplin shirt dress', '["white"]', '["0", "2", "4", "6", "8", "10", "12", "14"]', '["cotton", "silk"]', 'White, floor-length dress with shirt collar.', '/images/white-dress1.png', 1500, 1, 1),

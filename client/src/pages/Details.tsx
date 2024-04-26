@@ -55,8 +55,8 @@ export function Details() {
     );
   }
 
-
-  const { name, imageUrl, price, colors, materials, sizes, description } = details;
+  const { name, imageUrl, price, colors, materials, sizes, description } =
+    details;
   const customColors = {
     black: '000000',
     white: 'ffffff',
