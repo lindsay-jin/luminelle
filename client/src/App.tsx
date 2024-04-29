@@ -7,6 +7,7 @@ import { Catalog } from './pages/Catalog';
 import { Details } from './pages/Details';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
+import { Wishlist } from './pages/Wishlist';
 import { User, UserProvider } from './components/UserContext';
 import { saveToken } from '../lib/data';
 import { useState } from 'react';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
           <Route path="sign-up" element={<Signup />} />
           <Route path="login" element={<Login />} />
+          <Route path="wishlist" element={<Wishlist />} />
         </Route>
       </Routes>
     </UserProvider>
