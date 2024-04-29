@@ -168,7 +168,7 @@ export function Navigation({ categories }: Props) {
                 </button>
               </div>
               <div className="flex flex-nowrap items-center">
-                <FaRegUser className="ml-2" />
+                <FaRegUser className="m-2" />
                 {!user && (
                   <div>
                     <div>
@@ -182,8 +182,9 @@ export function Navigation({ categories }: Props) {
                         </button>
                       </Link>
                       |
-                      <Link to="/sign-up" className="m-2">
+                      <Link to="/sign-up">
                         <button
+                          className="m-2"
                           onClick={() => {
                             toggleUserMenu();
                             navigate('/sign-up');
