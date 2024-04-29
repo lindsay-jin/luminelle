@@ -9,6 +9,7 @@ import { FaRegHeart } from 'react-icons/fa6';
 import { IoBagOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 // import { IoBag } from "react-icons/io5";
+import { useUser } from '../components/useUser';
 
 export type Subcategory = {
   name: string;
@@ -30,10 +31,12 @@ export function Navigation({ categories }: Props) {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isUserOpen, setIsUserOpen] = useState(false);
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, handleSignOut } = useUser();
 
   const isHomePage = location.pathname === '/';
   //const isLoginPage = location.pathname === '/sign-up' || location.pathname === '/log-in';
@@ -52,6 +55,10 @@ export function Navigation({ categories }: Props) {
 
   function handleType(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchText(event.target.value);
+  }
+
+  function toggleUserMenu() {
+    setIsUserOpen(!isUserOpen);
   }
 
   useEffect(() => {
@@ -145,13 +152,64 @@ export function Navigation({ categories }: Props) {
             ))}
           </ul>
           <div className="flex">
-            <Link to="/sign-up">
-              <FaRegUser className="cursor-pointer mx-2" />
-            </Link>
+            <FaRegUser
+              className="cursor-pointer mx-2"
+              onClick={toggleUserMenu}
+            />
             <IoSearch className="cursor-pointer mx-2" onClick={toggleSearch} />
             <FaRegHeart className="cursor-pointer mx-2" />
             <IoBagOutline className="cursor-pointer mx-2" />
           </div>
+          {isUserOpen && (
+            <div className="absolute right-0 top-0 h-screen w-[200px] flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+              <div className="my-2 flex justify-end mr-7">
+                <button onClick={toggleUserMenu} className="text-lg">
+                  X
+                </button>
+              </div>
+              <div className="flex flex-nowrap items-center">
+                <FaRegUser className="m-2" />
+                {!user && (
+                  <div>
+                    <div>
+                      <Link to="/login" className="m-2">
+                        <button
+                          onClick={() => {
+                            toggleUserMenu();
+                            navigate('/login');
+                          }}>
+                          Login
+                        </button>
+                      </Link>
+                      |
+                      <Link to="/sign-up">
+                        <button
+                          className="m-2"
+                          onClick={() => {
+                            toggleUserMenu();
+                            navigate('/sign-up');
+                          }}>
+                          Register
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+                {user && (
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        toggleUserMenu();
+                        navigate('/');
+                      }}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           {isSearching && (
             <div className="fixed top-0 inset-x-0 z-50 bg-white shadow">
               <div className="flex w-full">
