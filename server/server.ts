@@ -189,6 +189,12 @@ app.post('/api/wishlist', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user?.userId;
     const { productId } = req.body;
+    if (!productId) {
+      throw new ClientError(400, 'ProductId is required.');
+    }
+    if (!Number.isInteger(+productId)) {
+      throw new ClientError(400, 'Product Id must be an integer.');
+    }
     const sql = `
       insert into "wishlist" ("userId", "productId")
       values ($1, $2)
@@ -210,9 +216,9 @@ app.delete(
     try {
       const userId = req.user?.userId;
       const { productId } = req.params;
-      // if (!Number.isInteger(+productId)) {
-      //   throw new ClientError(400, 'Product Id must be an integer.');
-      // }
+      if (!Number.isInteger(+productId)) {
+        throw new ClientError(400, 'Product Id must be an integer.');
+      }
       const sql = `
       delete from "wishlist" where "userId" = $1 and "productId" = $2
       returning *;
@@ -221,7 +227,7 @@ app.delete(
       const result = await db.query(sql, params);
       const [unlikedItem] = result.rows;
       if (!unlikedItem) throw new ClientError(404, 'Product does not exist.');
-      res.status(204).json(unlikedItem);
+      res.status(200).json(unlikedItem);
     } catch (error) {
       next(error);
     }
