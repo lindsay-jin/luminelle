@@ -11,6 +11,7 @@ import { Wishlist } from './pages/Wishlist';
 import { User, UserProvider } from './components/UserContext';
 import { saveToken } from '../lib/data';
 import { useState } from 'react';
+import {WishlistProvider} from './components/WishlistContext';
 
 const categories = [
   {
@@ -52,22 +53,24 @@ export default function App() {
 
   return (
     <UserProvider value={contextValue}>
-      <Routes>
-        <Route path="/" element={<Navigation categories={categories} />}>
-          <Route index element={<Home />} />
-          <Route
-            path="catalog/:categoryId"
-            element={<Subheader categories={categories} />}>
-            <Route index element={<Catalog />} />
-            <Route path=":subcategoryId" element={<Catalog />} />
-            <Route path="p/:productId" element={<Details />} />
+      <WishlistProvider>
+        <Routes>
+          <Route path="/" element={<Navigation categories={categories} />}>
+            <Route index element={<Home />} />
+            <Route
+              path="catalog/:categoryId"
+              element={<Subheader categories={categories} />}>
+              <Route index element={<Catalog />} />
+              <Route path=":subcategoryId" element={<Catalog />} />
+              <Route path="p/:productId" element={<Details />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+            <Route path="sign-up" element={<Signup />} />
+            <Route path="login" element={<Login />} />
+            <Route path="wishlist" element={<Wishlist />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
-          <Route path="sign-up" element={<Signup />} />
-          <Route path="login" element={<Login />} />
-          <Route path="wishlist" element={<Wishlist />} />
-        </Route>
-      </Routes>
+        </Routes>
+      </WishlistProvider>
     </UserProvider>
   );
 }

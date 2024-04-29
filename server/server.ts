@@ -185,6 +185,30 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
+app.get('/api/wishlist', authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new ClientError(401, 'User must be logged in to view wishlist.');
+    }
+    const sql = `
+      select * from "wishlist"
+      join "product" using ("productId")
+      where "userId" = $1;
+    `;
+    const params = [userId];
+    const result = await db.query(sql, params);
+    const [wishlist] = result.rows
+    if (wishlist.length === 0) {
+      return res.status(404).json({ message: 'No items in wishlist.' });
+    }
+    res.status(200).json(wishlist);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 app.post('/api/wishlist', authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user?.userId;

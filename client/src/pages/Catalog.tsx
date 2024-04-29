@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
-import { FaCircle } from 'react-icons/fa';
+import { FaCircle, FaRegHeart } from 'react-icons/fa6';
 
 export type Product = {
   productId: number;
@@ -307,12 +307,13 @@ export function ProductCard({ product, onClick }: Props) {
       to={`/catalog/${categoryId}/p/${productId}`}
       className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
       onClick={onClick}>
-      <div className="w-full">
+      <div className="w-full relative">
         <img
           src={imageUrl}
           alt={name}
           className="w-full h-full object-cover aspect-[5/6]"
         />
+        <FaRegHeart className="absolute top-5 right-5 text-lg" />
       </div>
       <div className="text-center pt-3 pb-7">
         <p>{name}</p>

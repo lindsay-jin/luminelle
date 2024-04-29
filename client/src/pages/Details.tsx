@@ -96,7 +96,7 @@ export function Details() {
       )}
       <div className="w-1/2 relative">
         <img src={imageUrl} alt={name} />
-        <FaRegHeart className="absolute top-5 right-5" />
+        <FaRegHeart className="absolute top-5 right-5 text-2xl cursor-pointer" />
       </div>
       <div className="w-1/2 mx-8 flex flex-col">
         <div className="mt-3 mb-3">
