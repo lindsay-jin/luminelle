@@ -161,16 +161,18 @@ export function Navigation({ categories }: Props) {
             <IoBagOutline className="cursor-pointer mx-2" />
           </div>
           {isUserOpen && (
-            <div className="absolute right-0 top-0 h-full w-1/3 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
-              <div className="my-10">
-                <button onClick={toggleUserMenu}>X</button>
+            <div className="absolute right-0 top-0 h-screen w-[200px] flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+              <div className="my-2 flex justify-end mr-7">
+                <button onClick={toggleUserMenu} className="text-lg">
+                  X
+                </button>
               </div>
-              <div className="flex flex-nowrap">
-                <FaRegUser />
+              <div className="flex flex-nowrap items-center">
+                <FaRegUser className="ml-2" />
                 {!user && (
                   <div>
                     <div>
-                      <Link to="/login" className="ml-2">
+                      <Link to="/login" className="m-2">
                         <button
                           onClick={() => {
                             toggleUserMenu();
@@ -179,7 +181,8 @@ export function Navigation({ categories }: Props) {
                           Login
                         </button>
                       </Link>
-                      <Link to="/sign-up">
+                      |
+                      <Link to="/sign-up" className="m-2">
                         <button
                           onClick={() => {
                             toggleUserMenu();
