@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
-import { FaRegUser } from 'react-icons/fa6';
-// import { FaUser } from 'react-icons/fa6';
+import { FaHeart, FaRegUser, FaUser } from 'react-icons/fa6';
 import { IoSearch } from 'react-icons/io5';
 import { FaRegHeart } from 'react-icons/fa6';
 // import { IoMdHeart } from "react-icons/io";
@@ -12,6 +11,7 @@ import { CategoryMenu } from '../pages/CategoryMenu';
 import { UserMenu } from '../pages/UserMenu';
 import { SearchBar } from '../pages/SearchBar';
 import { useState } from 'react';
+import { useWishlist } from './useWishlist';
 
 export type Subcategory = {
   name: string;
@@ -35,6 +35,7 @@ export function Navigation({ categories }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useUser();
+  const { wishlist } = useWishlist();
 
   const isHomePage = location.pathname === '/';
 
@@ -84,15 +85,29 @@ export function Navigation({ categories }: Props) {
             handleMouseLeave={handleMouseLeave}
           />
           <div className="flex">
-            <FaRegUser
-              className="cursor-pointer mx-2"
-              onClick={toggleUserMenu}
-            />
+            {user ? (
+              <FaUser
+                className="cursor-pointer mx-2"
+                onClick={toggleUserMenu}
+              />
+            ) : (
+              <FaRegUser
+                className="cursor-pointer mx-2"
+                onClick={toggleUserMenu}
+              />
+            )}
             <IoSearch className="cursor-pointer mx-2" onClick={toggleSearch} />
-            <FaRegHeart
-              className="cursor-pointer mx-2"
-              onClick={() => navigate('/wishlist')}
-            />
+            {wishlist.length === 0 ? (
+              <FaRegHeart
+                className="cursor-pointer mx-2"
+                onClick={() => navigate('/wishlist')}
+              />
+            ) : (
+              <FaHeart
+                className="cursor-pointer mx-2"
+                onClick={() => navigate('/wishlist')}
+              />
+            )}
             <IoBagOutline className="cursor-pointer mx-2" />
           </div>
           <UserMenu

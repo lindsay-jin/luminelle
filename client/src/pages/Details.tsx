@@ -86,7 +86,7 @@ export function Details() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex pt-4">
       {isOpen && (
         <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
           <button className="mr-2 my-4 self-end underline" onClick={toggleMenu}>

@@ -58,8 +58,7 @@ export function WishlistProvider({ children }) {
         },
       });
       if (!response.ok) throw new Error('Error deleting from wishlist.');
-      const deletedItem = await response.json();
-      alert(`${deletedItem.name} has been deleted.`);
+      await response.json();
       setWishlist((oldWishlist) =>
         oldWishlist.filter((product) => product.productId !== productId)
       );

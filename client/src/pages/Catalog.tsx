@@ -318,16 +318,15 @@ export function ProductCard({ product, onClick }: Props) {
   }
 
   return (
-    <Link
-      to={`/p/${productId}`}
-      className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
-      onClick={onClick}>
+    <div className="flex flex-col w-1/4 mx-0.2 border border-transparent hover:border-gray-500">
       <div className="w-full relative">
-        <img
-          src={imageUrl}
-          alt={name}
-          className="w-full h-full object-cover aspect-[5/6]"
-        />
+        <Link to={`/p/${productId}`} onClick={onClick}>
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover aspect-[5/6]"
+          />
+        </Link>
         {isLiked ? (
           <FaHeart
             className="absolute top-5 right-5 cursor-pointer"
@@ -344,6 +343,6 @@ export function ProductCard({ product, onClick }: Props) {
         <p>{name}</p>
         <p>{toDollars(price)}</p>
       </div>
-    </Link>
+    </div>
   );
 }
