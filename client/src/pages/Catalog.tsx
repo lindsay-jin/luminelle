@@ -287,6 +287,7 @@ export function Catalog() {
             key={product.productId}
             product={product}
             onClick={toggleSearch}
+            showAddToCartButton={false}
           />
         ))}
       </div>
@@ -296,10 +297,15 @@ export function Catalog() {
 
 export type Props = {
   product: Product;
-  onClick: () => void;
+  onClick?: () => void;
+  showAddToCartButton: boolean;
 };
 
-export function ProductCard({ product, onClick }: Props) {
+export function ProductCard({
+  product,
+  onClick,
+  showAddToCartButton = false,
+}: Props) {
   const { productId, imageUrl, name, price } = product;
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -309,7 +315,7 @@ export function ProductCard({ product, onClick }: Props) {
   }, [productId, isInWishlist]);
 
   function toggleWishlist() {
-    if (isLiked) {
+    if (isInWishlist(product.productId)) {
       removeFromWishlist(productId);
     } else {
       addToWishlist(product);
@@ -343,6 +349,11 @@ export function ProductCard({ product, onClick }: Props) {
         <p>{name}</p>
         <p>{toDollars(price)}</p>
       </div>
+      {showAddToCartButton && (
+        <button className="border-solid bg-black text-white w-full h-10">
+          Add to bag
+        </button>
+      )}
     </div>
   );
 }

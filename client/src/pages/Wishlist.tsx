@@ -1,22 +1,10 @@
-import { Product, ProductCard } from './Catalog';
+import { ProductCard } from './Catalog';
 import { useWishlist } from '../components/useWishlist';
-import { useState } from 'react';
 import { useUser } from '../components/useUser';
 
 export function Wishlist() {
-  const { wishlist, isInWishlist, removeFromWishlist, addToWishlist } =
-    useWishlist();
-  const [isLiked, setIsLiked] = useState(false);
+  const { wishlist } = useWishlist();
   const { user } = useUser();
-
-  function toggleWishlist(product: Product) {
-    if (isInWishlist(product.productId)) {
-      removeFromWishlist(product.productId);
-    } else {
-      addToWishlist(product);
-    }
-    setIsLiked(!isLiked);
-  }
 
   return (
     <div className="mx-0.2 pt-3">
@@ -35,7 +23,7 @@ export function Wishlist() {
             <ProductCard
               key={product.productId}
               product={product}
-              onClick={() => toggleWishlist(product)}
+              showAddToCartButton={true}
             />
           ))}
       </div>

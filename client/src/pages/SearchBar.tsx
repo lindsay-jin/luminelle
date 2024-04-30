@@ -82,6 +82,7 @@ export function SearchBar({ toggleSearch }: Props) {
                   key={product.productId}
                   product={product}
                   onClick={toggleSearch}
+                  showAddToCartButton={false}
                 />
               ))}
             </div>
