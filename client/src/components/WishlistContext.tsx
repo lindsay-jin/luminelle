@@ -6,10 +6,14 @@ export type WishlistProduct = {
   imageUrl: string;
   name: string;
   price: number;
+  colors: string[];
+  sizes: string[];
+  materials: string[];
 };
 
 export type WishlistContextValues = {
   wishlist: WishlistProduct[];
+  isInWishlist: (productId: number)=> boolean;
   addToWishlist: (productId: number) => void;
   removeFromWishlist: (productId: number) => void;
   error?: unknown;
@@ -18,6 +22,7 @@ export type WishlistContextValues = {
 
 export const WishlistContext = createContext<WishlistContextValues>({
   wishlist: [],
+  isInWishlist: ()=> false,
   addToWishlist: () => undefined,
   removeFromWishlist: () => undefined,
 });
@@ -27,6 +32,10 @@ export function WishlistProvider({ children }) {
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
+
+  function isInWishlist (productId: number): boolean{
+    return wishlist.some((product) => product.productId === productId);
+  }
 
   async function addToWishlist(productId: number) {
     try {
@@ -85,7 +94,7 @@ export function WishlistProvider({ children }) {
 
   return (
     <WishlistContext.Provider
-      value={{ error, isLoading, wishlist, addToWishlist, removeFromWishlist }}>
+      value={{ error, isLoading, wishlist, isInWishlist, addToWishlist, removeFromWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

@@ -89,7 +89,10 @@ export function Navigation({ categories }: Props) {
               onClick={toggleUserMenu}
             />
             <IoSearch className="cursor-pointer mx-2" onClick={toggleSearch} />
-            <FaRegHeart className="cursor-pointer mx-2" />
+            <FaRegHeart
+              className="cursor-pointer mx-2"
+              onClick={() => navigate('/wishlist')}
+            />
             <IoBagOutline className="cursor-pointer mx-2" />
           </div>
           <UserMenu

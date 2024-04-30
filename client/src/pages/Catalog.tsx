@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
-import { FaCircle, FaRegHeart } from 'react-icons/fa6';
+import { FaCircle, FaHeart, FaRegHeart } from 'react-icons/fa6';
+import { useWishlist } from '../components/useWishlist';
 
 export type Product = {
   productId: number;
@@ -301,6 +302,21 @@ export type Props = {
 export function ProductCard({ product, onClick }: Props) {
   const { productId, imageUrl, name, price } = product;
   const { categoryId } = useParams<{ categoryId: string }>();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLiked(isInWishlist(productId));
+  }, [productId, isInWishlist]);
+
+  function toggleWishlist(){
+    if (isLiked) {
+      removeFromWishlist(productId);
+    } else {
+      addToWishlist(productId);
+    }
+    setIsLiked(!isLiked);
+  }
 
   return (
     <Link
@@ -313,7 +329,17 @@ export function ProductCard({ product, onClick }: Props) {
           alt={name}
           className="w-full h-full object-cover aspect-[5/6]"
         />
-        <FaRegHeart className="absolute top-5 right-5 text-lg" />
+        {isLiked ? (
+          <FaHeart
+            className="absolute top-5 right-5 cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        ) : (
+          <FaRegHeart
+            className="absolute top-5 right-5 cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        )}
       </div>
       <div className="text-center pt-3 pb-7">
         <p>{name}</p>
