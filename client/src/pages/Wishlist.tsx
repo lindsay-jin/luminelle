@@ -3,7 +3,7 @@ import { useWishlist } from '../components/useWishlist';
 import { useUser } from '../components/useUser';
 
 export function Wishlist() {
-  const { wishlist } = useWishlist();
+  const { wishlist, isInWishlist } = useWishlist();
   const { user } = useUser();
 
   return (
@@ -19,13 +19,16 @@ export function Wishlist() {
         )}
         {user &&
           wishlist.length > 0 &&
-          wishlist.map((product) => (
-            <ProductCard
-              key={product.productId}
-              product={product}
-              showAddToCartButton={true}
-            />
-          ))}
+          wishlist.map(
+            (product) =>
+              isInWishlist(product.productId) && (
+                <ProductCard
+                  key={product.productId}
+                  product={product}
+                  showAddToCartButton={true}
+                />
+              )
+          )}
       </div>
     </div>
   );
