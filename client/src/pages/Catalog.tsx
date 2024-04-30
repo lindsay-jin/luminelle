@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
-import { FaCircle } from 'react-icons/fa';
+import { FaCircle, FaHeart, FaRegHeart } from 'react-icons/fa6';
+import { useWishlist } from '../components/useWishlist';
 
 export type Product = {
   productId: number;
@@ -286,6 +287,7 @@ export function Catalog() {
             key={product.productId}
             product={product}
             onClick={toggleSearch}
+            showAddToCartButton={false}
           />
         ))}
       </div>
@@ -295,29 +297,63 @@ export function Catalog() {
 
 export type Props = {
   product: Product;
-  onClick: () => void;
+  onClick?: () => void;
+  showAddToCartButton: boolean;
 };
 
-export function ProductCard({ product, onClick }: Props) {
+export function ProductCard({
+  product,
+  onClick,
+  showAddToCartButton = false,
+}: Props) {
   const { productId, imageUrl, name, price } = product;
-  const { categoryId } = useParams<{ categoryId: string }>();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLiked(isInWishlist(productId));
+  }, [productId, isInWishlist]);
+
+  function toggleWishlist() {
+    if (isInWishlist(product.productId)) {
+      removeFromWishlist(productId);
+    } else {
+      addToWishlist(product);
+    }
+    setIsLiked(!isLiked);
+  }
 
   return (
-    <Link
-      to={`/catalog/${categoryId}/p/${productId}`}
-      className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
-      onClick={onClick}>
-      <div className="w-full">
-        <img
-          src={imageUrl}
-          alt={name}
-          className="w-full h-full object-cover aspect-[5/6]"
-        />
+    <div className="flex flex-col w-1/4 mx-0.2 border border-transparent hover:border-gray-500">
+      <div className="w-full relative">
+        <Link to={`/p/${productId}`} onClick={onClick}>
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover aspect-[5/6]"
+          />
+        </Link>
+        {isLiked ? (
+          <FaHeart
+            className="absolute top-5 right-5 cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        ) : (
+          <FaRegHeart
+            className="absolute top-5 right-5 cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        )}
       </div>
       <div className="text-center pt-3 pb-7">
         <p>{name}</p>
         <p>{toDollars(price)}</p>
       </div>
-    </Link>
+      {showAddToCartButton && (
+        <button className="border-solid bg-black text-white w-full h-10">
+          Add to bag
+        </button>
+      )}
+    </div>
   );
 }

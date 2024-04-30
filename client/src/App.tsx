@@ -7,9 +7,11 @@ import { Catalog } from './pages/Catalog';
 import { Details } from './pages/Details';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
+import { Wishlist } from './pages/Wishlist';
 import { User, UserProvider } from './components/UserContext';
-import { saveToken } from '../lib/data';
-import { useState } from 'react';
+import { readToken, readUser, saveToken, saveUser } from '../lib/data';
+import { useEffect, useState } from 'react';
+import { WishlistProvider } from './components/WishlistContext';
 
 const categories = [
   {
@@ -39,33 +41,47 @@ export default function App() {
     setUser(user);
     setToken(token);
     saveToken(token);
+    saveUser(user);
   }
 
   function handleSignOut() {
     setUser(undefined);
     setToken(undefined);
     saveToken(undefined);
+    saveUser(undefined);
   }
+
+  useEffect(() => {
+    try {
+      setUser(readUser());
+      setToken(readToken());
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const contextValue = { user, token, handleSignIn, handleSignOut };
 
   return (
     <UserProvider value={contextValue}>
-      <Routes>
-        <Route path="/" element={<Navigation categories={categories} />}>
-          <Route index element={<Home />} />
-          <Route
-            path="catalog/:categoryId"
-            element={<Subheader categories={categories} />}>
-            <Route index element={<Catalog />} />
-            <Route path=":subcategoryId" element={<Catalog />} />
+      <WishlistProvider>
+        <Routes>
+          <Route path="/" element={<Navigation categories={categories} />}>
+            <Route index element={<Home />} />
+            <Route
+              path="catalog/:categoryId"
+              element={<Subheader categories={categories} />}>
+              <Route index element={<Catalog />} />
+              <Route path=":subcategoryId" element={<Catalog />} />
+            </Route>
             <Route path="p/:productId" element={<Details />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="sign-up" element={<Signup />} />
+            <Route path="login" element={<Login />} />
+            <Route path="wishlist" element={<Wishlist />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
-          <Route path="sign-up" element={<Signup />} />
-          <Route path="login" element={<Login />} />
-        </Route>
-      </Routes>
+        </Routes>
+      </WishlistProvider>
     </UserProvider>
   );
 }

@@ -185,6 +185,78 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
   }
 });
 
+app.get('/api/wishlist', authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new ClientError(401, 'User must be logged in to view wishlist.');
+    }
+    const sql = `
+      select * from "wishlist"
+      join "product" using ("productId")
+      where "userId" = $1;
+    `;
+    const params = [userId];
+    const result = await db.query(sql, params);
+    const wishlist = result.rows;
+    if (wishlist.length === 0) {
+      return res.status(404).json({ message: 'No items in wishlist.' });
+    }
+    res.status(200).json(wishlist);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/wishlist/:productId', authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user?.userId;
+    const { productId } = req.params;
+    if (!productId) {
+      throw new ClientError(400, 'ProductId is required.');
+    }
+    if (!Number.isInteger(+productId)) {
+      throw new ClientError(400, 'Product Id must be an integer.');
+    }
+    const sql = `
+      insert into "wishlist" ("userId", "productId")
+      values ($1, $2)
+      returning *;
+    `;
+    const params = [userId, productId];
+    const result = await db.query(sql, params);
+    const [likedItem] = result.rows;
+    res.status(201).json(likedItem);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete(
+  '/api/wishlist/:productId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const userId = req.user?.userId;
+      const { productId } = req.params;
+      if (!Number.isInteger(+productId)) {
+        throw new ClientError(400, 'Product Id must be an integer.');
+      }
+      const sql = `
+      delete from "wishlist" where "userId" = $1 and "productId" = $2
+      returning *;
+    `;
+      const params = [userId, productId];
+      const result = await db.query(sql, params);
+      const [unlikedItem] = result.rows;
+      if (!unlikedItem) throw new ClientError(404, 'Product does not exist.');
+      res.status(200).json(unlikedItem);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 /*
  * Middleware that handles paths that aren't handled by static middleware
  * or API route handlers.

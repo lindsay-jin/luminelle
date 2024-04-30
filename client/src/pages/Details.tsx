@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FaRegHeart } from 'react-icons/fa6';
-// import { IoMdHeart } from "react-icons/io";
+import { FaRegHeart, FaHeart } from 'react-icons/fa6';
 import { FaCircle } from 'react-icons/fa';
 import { toDollars } from '../../lib/to-dollars';
+import { useWishlist } from '../components/useWishlist';
+import { Product } from './Catalog';
 
-export type ProductDetails = {
-  productId: number;
-  imageUrl: string;
-  name: string;
-  price: number;
-  colors: string[];
-  materials: string[];
-  sizes: string[];
+export type ProductDetails = Product & {
   description: string;
 };
 
@@ -22,6 +16,8 @@ export function Details() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [isOpen, setIsOpen] = useState(false);
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     async function loadDetails() {
@@ -31,6 +27,8 @@ export function Details() {
           throw new Error(`Fetch error with status ${response.status}`);
         const result = await response.json();
         setDetails(result);
+        if (!productId) throw new Error('productId does not exist.');
+        setIsLiked(isInWishlist(parseInt(productId)));
       } catch (error) {
         setError(error);
       } finally {
@@ -40,7 +38,7 @@ export function Details() {
     if (productId) {
       loadDetails();
     }
-  }, [productId]);
+  }, [productId, isInWishlist]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -74,8 +72,21 @@ export function Details() {
     setIsOpen(!isOpen);
   }
 
+  function toggleWishlist() {
+    if (!productId) throw new Error('ProductId does not exist.');
+    const id = parseInt(productId);
+    if (isLiked) {
+      removeFromWishlist(id);
+    } else {
+      if (details) {
+        addToWishlist(details);
+      }
+    }
+    setIsLiked(!isLiked);
+  }
+
   return (
-    <div className="flex">
+    <div className="flex pt-4">
       {isOpen && (
         <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
           <button className="mr-2 my-4 self-end underline" onClick={toggleMenu}>
@@ -96,7 +107,17 @@ export function Details() {
       )}
       <div className="w-1/2 relative">
         <img src={imageUrl} alt={name} />
-        <FaRegHeart className="absolute top-5 right-5" />
+        {isLiked ? (
+          <FaHeart
+            className="absolute top-5 right-5 text-2xl cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        ) : (
+          <FaRegHeart
+            className="absolute top-5 right-5 text-2xl cursor-pointer"
+            onClick={toggleWishlist}
+          />
+        )}
       </div>
       <div className="w-1/2 mx-8 flex flex-col">
         <div className="mt-3 mb-3">
