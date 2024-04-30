@@ -198,7 +198,7 @@ app.get('/api/wishlist', authMiddleware, async (req, res, next) => {
     `;
     const params = [userId];
     const result = await db.query(sql, params);
-    const [wishlist] = result.rows;
+    const wishlist = result.rows;
     if (wishlist.length === 0) {
       return res.status(404).json({ message: 'No items in wishlist.' });
     }

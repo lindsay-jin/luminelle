@@ -1,20 +1,11 @@
 import { createContext, useState, useEffect } from 'react';
 import { useUser } from './useUser';
-
-export type WishlistProduct = {
-  productId: number;
-  imageUrl: string;
-  name: string;
-  price: number;
-  colors: string[];
-  sizes: string[];
-  materials: string[];
-};
+import { type Product } from '../pages/Catalog';
 
 export type WishlistContextValues = {
-  wishlist: WishlistProduct[];
-  isInWishlist: (productId: number)=> boolean;
-  addToWishlist: (productId: number) => void;
+  wishlist: Product[];
+  isInWishlist: (productId: number) => boolean;
+  addToWishlist: (product: Product) => void;
   removeFromWishlist: (productId: number) => void;
   error?: unknown;
   isLoading?: boolean;
@@ -22,33 +13,34 @@ export type WishlistContextValues = {
 
 export const WishlistContext = createContext<WishlistContextValues>({
   wishlist: [],
-  isInWishlist: ()=> false,
+  isInWishlist: () => false,
   addToWishlist: () => undefined,
   removeFromWishlist: () => undefined,
 });
 
 export function WishlistProvider({ children }) {
-  const [wishlist, setWishlist] = useState<WishlistProduct[]>([]);
+  const [wishlist, setWishlist] = useState<Product[]>([]);
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useUser();
+  const { user, token } = useUser();
 
-  function isInWishlist (productId: number): boolean{
+  function isInWishlist(productId: number): boolean {
     return wishlist.some((product) => product.productId === productId);
   }
 
-  async function addToWishlist(productId: number) {
+  async function addToWishlist(product: Product) {
     try {
       if (!user) return;
-      const response = await fetch(`/api/wishlist/${productId}`, {
+      const response = await fetch(`/api/wishlist/${product.productId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) throw new Error('Error adding to wishlist.');
-      const result = await response.json();
-      setWishlist([...wishlist, result]);
+      await response.json();
+      setWishlist([...wishlist, product]);
     } catch (error) {
       setError(error);
     } finally {
@@ -61,6 +53,9 @@ export function WishlistProvider({ children }) {
       if (!user) return;
       const response = await fetch(`/api/wishlist/${productId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (!response.ok) throw new Error('Error deleting from wishlist.');
       const deletedItem = await response.json();
@@ -79,7 +74,11 @@ export function WishlistProvider({ children }) {
     async function fetchWishlist() {
       try {
         if (!user) return;
-        const response = await fetch('/api/wishlist/');
+        const response = await fetch('/api/wishlist/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) throw new Error('Fetching wishlist failed.');
         const result = await response.json();
         setWishlist(result);
@@ -90,11 +89,18 @@ export function WishlistProvider({ children }) {
       }
     }
     fetchWishlist();
-  }, [user]);
+  }, [user, token]);
 
   return (
     <WishlistContext.Provider
-      value={{ error, isLoading, wishlist, isInWishlist, addToWishlist, removeFromWishlist }}>
+      value={{
+        error,
+        isLoading,
+        wishlist,
+        isInWishlist,
+        addToWishlist,
+        removeFromWishlist,
+      }}>
       {children}
     </WishlistContext.Provider>
   );

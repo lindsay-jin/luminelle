@@ -4,15 +4,9 @@ import { FaRegHeart, FaHeart } from 'react-icons/fa6';
 import { FaCircle } from 'react-icons/fa';
 import { toDollars } from '../../lib/to-dollars';
 import { useWishlist } from '../components/useWishlist';
+import { Product } from './Catalog';
 
-export type ProductDetails = {
-  productId: number;
-  imageUrl: string;
-  name: string;
-  price: number;
-  colors: string[];
-  materials: string[];
-  sizes: string[];
+export type ProductDetails = Product & {
   description: string;
 };
 
@@ -22,9 +16,8 @@ export function Details() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [isOpen, setIsOpen] = useState(false);
-  const {isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState(false);
-
 
   useEffect(() => {
     async function loadDetails() {
@@ -34,7 +27,7 @@ export function Details() {
           throw new Error(`Fetch error with status ${response.status}`);
         const result = await response.json();
         setDetails(result);
-        if(!productId) throw new Error('productId does not exist.')
+        if (!productId) throw new Error('productId does not exist.');
         setIsLiked(isInWishlist(parseInt(productId)));
       } catch (error) {
         setError(error);
@@ -79,14 +72,14 @@ export function Details() {
     setIsOpen(!isOpen);
   }
 
-  function toggleWishlist(){
-    if(!productId)throw new Error('ProductId does not exist.')
+  function toggleWishlist() {
+    if (!productId) throw new Error('ProductId does not exist.');
     const id = parseInt(productId);
     if (isLiked) {
       removeFromWishlist(id);
     } else {
       if (details) {
-        addToWishlist(id);
+        addToWishlist(details);
       }
     }
     setIsLiked(!isLiked);

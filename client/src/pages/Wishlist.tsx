@@ -1,16 +1,19 @@
-import { ProductCard } from "./Catalog";
-import { useWishlist } from "../components/useWishlist";
-import { useState } from "react";
+import { Product, ProductCard } from './Catalog';
+import { useWishlist } from '../components/useWishlist';
+import { useState } from 'react';
+import { useUser } from '../components/useUser';
 
 export function Wishlist() {
-   const { wishlist, isInWishlist, removeFromWishlist, addToWishlist } = useWishlist();
-   const [isLiked, setIsLiked] = useState(false);
+  const { wishlist, isInWishlist, removeFromWishlist, addToWishlist } =
+    useWishlist();
+  const [isLiked, setIsLiked] = useState(false);
+  const { user } = useUser();
 
-   function toggleWishlist(productId: number){
-    if (isInWishlist(productId)) {
-      removeFromWishlist(productId);
+  function toggleWishlist(product: Product) {
+    if (isInWishlist(product.productId)) {
+      removeFromWishlist(product.productId);
     } else {
-      addToWishlist(productId);
+      addToWishlist(product);
     }
     setIsLiked(!isLiked);
   }
@@ -19,17 +22,17 @@ export function Wishlist() {
     <div>
       <h2>Wishlist</h2>
       <div>
-        {wishlist.length > 0 ? (
+        {!user && <p>Please login to view your wishlist.</p>}
+        {user && wishlist.length === 0 && <p>Your wishlist is empty.</p>}
+        {user &&
+          wishlist.length > 0 &&
           wishlist.map((product) => (
             <ProductCard
               key={product.productId}
               product={product}
-              onClick={() => toggleWishlist(product.productId)}
+              onClick={() => toggleWishlist(product)}
             />
-          ))
-        ) : (
-          <p>Your wishlist is empty.</p>
-        )}
+          ))}
       </div>
     </div>
   );

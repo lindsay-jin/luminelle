@@ -9,9 +9,9 @@ import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
 import { Wishlist } from './pages/Wishlist';
 import { User, UserProvider } from './components/UserContext';
-import { saveToken } from '../lib/data';
-import { useState } from 'react';
-import {WishlistProvider} from './components/WishlistContext';
+import { readToken, readUser, saveToken, saveUser } from '../lib/data';
+import { useEffect, useState } from 'react';
+import { WishlistProvider } from './components/WishlistContext';
 
 const categories = [
   {
@@ -41,13 +41,24 @@ export default function App() {
     setUser(user);
     setToken(token);
     saveToken(token);
+    saveUser(user);
   }
 
   function handleSignOut() {
     setUser(undefined);
     setToken(undefined);
     saveToken(undefined);
+    saveUser(undefined);
   }
+
+  useEffect(() => {
+    try {
+      setUser(readUser());
+      setToken(readToken());
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const contextValue = { user, token, handleSignIn, handleSignOut };
 
@@ -62,8 +73,8 @@ export default function App() {
               element={<Subheader categories={categories} />}>
               <Route index element={<Catalog />} />
               <Route path=":subcategoryId" element={<Catalog />} />
-              <Route path="p/:productId" element={<Details />} />
             </Route>
+            <Route path="p/:productId" element={<Details />} />
             <Route path="*" element={<NotFound />} />
             <Route path="sign-up" element={<Signup />} />
             <Route path="login" element={<Login />} />

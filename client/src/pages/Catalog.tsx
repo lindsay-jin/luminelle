@@ -301,7 +301,6 @@ export type Props = {
 
 export function ProductCard({ product, onClick }: Props) {
   const { productId, imageUrl, name, price } = product;
-  const { categoryId } = useParams<{ categoryId: string }>();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
@@ -309,18 +308,18 @@ export function ProductCard({ product, onClick }: Props) {
     setIsLiked(isInWishlist(productId));
   }, [productId, isInWishlist]);
 
-  function toggleWishlist(){
+  function toggleWishlist() {
     if (isLiked) {
       removeFromWishlist(productId);
     } else {
-      addToWishlist(productId);
+      addToWishlist(product);
     }
     setIsLiked(!isLiked);
   }
 
   return (
     <Link
-      to={`/catalog/${categoryId}/p/${productId}`}
+      to={`/p/${productId}`}
       className="flex flex-col w-1/4 px-0.2 border border-transparent hover:border-gray-500"
       onClick={onClick}>
       <div className="w-full relative">
