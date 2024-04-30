@@ -8,6 +8,7 @@ import { Details } from './pages/Details';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
 import { Wishlist } from './pages/Wishlist';
+import { Cart } from './pages/Cart';
 import { User, UserProvider } from './components/UserContext';
 import { readToken, readUser, saveToken, saveUser } from '../lib/data';
 import { useEffect, useState } from 'react';
@@ -79,6 +80,7 @@ export default function App() {
             <Route path="sign-up" element={<Signup />} />
             <Route path="login" element={<Login />} />
             <Route path="wishlist" element={<Wishlist />} />
+            <Route path="shopping-cart" element={<Cart />} />
           </Route>
         </Routes>
       </WishlistProvider>

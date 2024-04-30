@@ -12,6 +12,7 @@ import { UserMenu } from '../pages/UserMenu';
 import { SearchBar } from '../pages/SearchBar';
 import { useState } from 'react';
 import { useWishlist } from './useWishlist';
+import { CartMenu } from '../pages/CartMenu';
 
 export type Subcategory = {
   name: string;
@@ -32,6 +33,7 @@ export function Navigation({ categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useUser();
@@ -53,6 +55,10 @@ export function Navigation({ categories }: Props) {
 
   function toggleUserMenu() {
     setIsUserOpen(!isUserOpen);
+  }
+
+  function toggleCartMenu() {
+    setIsCartOpen(!isCartOpen);
   }
 
   return (
@@ -108,7 +114,10 @@ export function Navigation({ categories }: Props) {
                 onClick={() => navigate('/wishlist')}
               />
             )}
-            <IoBagOutline className="cursor-pointer mx-2" />
+            <IoBagOutline
+              className="cursor-pointer mx-2"
+              onClick={toggleCartMenu}
+            />
           </div>
           <UserMenu
             user={user}
@@ -117,6 +126,7 @@ export function Navigation({ categories }: Props) {
             toggleUserMenu={toggleUserMenu}
           />
           {isSearching && <SearchBar toggleSearch={toggleSearch} />}
+          <CartMenu isOpen={isCartOpen} toggleCartMenu={toggleCartMenu} />
         </nav>
       </div>
       <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>
