@@ -4,6 +4,7 @@ import { FaRegHeart, FaHeart } from 'react-icons/fa6';
 import { FaCircle } from 'react-icons/fa';
 import { toDollars } from '../../lib/to-dollars';
 import { useWishlist } from '../components/useWishlist';
+import { useCart } from '../components/useCart';
 import { Product } from './Catalog';
 
 export type ProductDetails = Product & {
@@ -18,6 +19,8 @@ export function Details() {
   const [isOpen, setIsOpen] = useState(false);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('');
+  const { addToCart, setIsCartOpen } = useCart();
 
   useEffect(() => {
     async function loadDetails() {
@@ -85,6 +88,19 @@ export function Details() {
     setIsLiked(!isLiked);
   }
 
+  function handleAddToCart() {
+    if (details && selectedSize) {
+      addToCart({
+        ...details,
+        quantity: 1,
+        sizes: [selectedSize],
+      });
+      setIsCartOpen(true);
+    } else {
+      alert('Please select a size before adding to cart');
+    }
+  }
+
   return (
     <div className="flex pt-4">
       {isOpen && (
@@ -140,14 +156,21 @@ export function Details() {
           <p className="py-3">SELECT SIZE:</p>
           <div>
             {sizes.map((size) => (
-              <button key={size} className="border-solid pl-12 pb-6">
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`border-solid ml-12 mb-6 px-2 ${
+                  selectedSize === size ? 'border border-black' : ''
+                }`}>
                 {size}
               </button>
             ))}
           </div>
         </div>
         <div className="flex justify-center">
-          <button className="mx-16 border-solid bg-black text-white w-full h-10">
+          <button
+            className="mx-16 border-solid bg-black text-white w-full h-10"
+            onClick={handleAddToCart}>
             Add to bag
           </button>
         </div>

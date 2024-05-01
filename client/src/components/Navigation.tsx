@@ -13,6 +13,7 @@ import { SearchBar } from '../pages/SearchBar';
 import { useState } from 'react';
 import { useWishlist } from './useWishlist';
 import { CartMenu } from '../pages/CartMenu';
+import { useCart } from './useCart';
 
 export type Subcategory = {
   name: string;
@@ -33,11 +34,11 @@ export function Navigation({ categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useUser();
   const { wishlist } = useWishlist();
+  const { isCartOpen, setIsCartOpen } = useCart();
 
   const isHomePage = location.pathname === '/';
 

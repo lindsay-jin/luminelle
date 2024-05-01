@@ -9,27 +9,63 @@ export type CartValues = {
   cart: CartProduct[];
   addToCart: (item: CartProduct) => void;
   removeFromCart: (item: CartProduct) => void;
+  isCartOpen: boolean;
+  setIsCartOpen: (boolean) => void;
 };
 
 export const CartContext = createContext<CartValues>({
   cart: [],
   addToCart: () => undefined,
   removeFromCart: () => undefined,
+  isCartOpen: false,
+  setIsCartOpen: () => undefined,
 });
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState<CartProduct[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  function addToCart(product: CartProduct) {
-    setCart((oldCart) => [...oldCart, product]);
+  //if item exist and size is different, add item
+  //if item exist an size is same, increase quantity
+  function addToCart(productToAdd) {
+    setCart((oldCart) => {
+      let productAdded = false;
+
+      const updatedCart = oldCart.map((product) => {
+        if (
+          product.productId === productToAdd.productId &&
+          product.sizes === productToAdd.sizes
+        ) {
+          productAdded = true;
+          return {
+            ...product,
+            quantity: product.quantity + productToAdd.quantity,
+          };
+        }
+        return product;
+      });
+
+      if (!productAdded) {
+        return [...updatedCart, productToAdd];
+      }
+
+      return updatedCart;
+    });
   }
 
-  function removeFromCart(product: CartProduct) {
-    setCart((oldCart) => [...oldCart, product]);
+  function removeFromCart(productToRemove) {
+    setCart((oldCart) =>
+      oldCart.filter(
+        (product) =>
+          product.productId !== productToRemove.productId ||
+          product.sizes !== productToRemove.sizes
+      )
+    );
   }
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, isCartOpen, setIsCartOpen }}>
       {children}
     </CartContext.Provider>
   );

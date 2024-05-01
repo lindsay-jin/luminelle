@@ -13,6 +13,7 @@ import { User, UserProvider } from './components/UserContext';
 import { readToken, readUser, saveToken, saveUser } from '../lib/data';
 import { useEffect, useState } from 'react';
 import { WishlistProvider } from './components/WishlistContext';
+import { CartProvider } from './components/CartContext';
 
 const categories = [
   {
@@ -66,23 +67,25 @@ export default function App() {
   return (
     <UserProvider value={contextValue}>
       <WishlistProvider>
-        <Routes>
-          <Route path="/" element={<Navigation categories={categories} />}>
-            <Route index element={<Home />} />
-            <Route
-              path="catalog/:categoryId"
-              element={<Subheader categories={categories} />}>
-              <Route index element={<Catalog />} />
-              <Route path=":subcategoryId" element={<Catalog />} />
+        <CartProvider>
+          <Routes>
+            <Route path="/" element={<Navigation categories={categories} />}>
+              <Route index element={<Home />} />
+              <Route
+                path="catalog/:categoryId"
+                element={<Subheader categories={categories} />}>
+                <Route index element={<Catalog />} />
+                <Route path=":subcategoryId" element={<Catalog />} />
+              </Route>
+              <Route path="p/:productId" element={<Details />} />
+              <Route path="*" element={<NotFound />} />
+              <Route path="sign-up" element={<Signup />} />
+              <Route path="login" element={<Login />} />
+              <Route path="wishlist" element={<Wishlist />} />
+              <Route path="shopping-cart" element={<Cart />} />
             </Route>
-            <Route path="p/:productId" element={<Details />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="sign-up" element={<Signup />} />
-            <Route path="login" element={<Login />} />
-            <Route path="wishlist" element={<Wishlist />} />
-            <Route path="shopping-cart" element={<Cart />} />
-          </Route>
-        </Routes>
+          </Routes>
+        </CartProvider>
       </WishlistProvider>
     </UserProvider>
   );
