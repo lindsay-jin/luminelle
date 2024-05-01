@@ -54,9 +54,14 @@ export type cardProps = {
 };
 
 export function CartCard({ product }: cardProps) {
-  const { imageUrl, name, colors, sizes, quantity, price } = product;
+  const { imageUrl, name, colors, size, quantity, price } = product;
+  const { removeFromCart } = useCart();
 
   const isShoppingCart = location.pathname === '/shopping-cart';
+
+  function handleRemoveFromCart() {
+    removeFromCart(product);
+  }
 
   return (
     <div className="flex my-1">
@@ -67,12 +72,16 @@ export function CartCard({ product }: cardProps) {
         <div>
           <p className="font-medium">{name}</p>
           <p>Color: {colors}</p>
-          <p>Size: {sizes}</p>
+          <p>Size: {size}</p>
           <p>Qty: {quantity}</p>
           <p>{toDollars(price)}</p>
         </div>
         <div>
-          <button className="underline font-medium">REMOVE</button>
+          <button
+            className="underline font-medium"
+            onClick={handleRemoveFromCart}>
+            REMOVE
+          </button>
         </div>
       </div>
       <hr className="my-3 border" />

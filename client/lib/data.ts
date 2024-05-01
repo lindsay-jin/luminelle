@@ -1,3 +1,4 @@
+import { CartProduct } from '../src/components/CartContext';
 import { User } from '../src/components/UserContext';
 
 export const tokenKey = 'um.token';
@@ -30,4 +31,22 @@ export function readUser(): User {
   const user = localStorage.getItem(userKey);
   if (!user) throw new Error('No user found');
   return JSON.parse(user);
+}
+
+const cartKey = 'um.cart';
+
+export function saveCart(cart: CartProduct[]) {
+  if (cart.length > 0) {
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+  } else {
+    localStorage.removeItem(cartKey);
+  }
+}
+
+export function readCart() {
+  const cart = localStorage.getItem(cartKey);
+  if (cart) {
+    return JSON.parse(cart);
+  }
+  return [];
 }

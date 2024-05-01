@@ -1,8 +1,10 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Product } from '../pages/Catalog';
+import { saveCart, readCart } from '../../lib/data';
 
 export type CartProduct = Product & {
   quantity: number;
+  size: string;
 };
 
 export type CartValues = {
@@ -25,42 +27,56 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState<CartProduct[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  //if item exist and size is different, add item
-  //if item exist an size is same, increase quantity
-  function addToCart(productToAdd) {
-    setCart((oldCart) => {
-      let productAdded = false;
+  useEffect(() => {
+    setCart(readCart());
+  }, []);
 
-      const updatedCart = oldCart.map((product) => {
+  function addToCart(productToAdd: CartProduct) {
+    let found = false;
+    setCart((oldCart) => {
+      const newCart = oldCart.map((product) => {
         if (
           product.productId === productToAdd.productId &&
-          product.sizes === productToAdd.sizes
+          product.size === productToAdd.size
         ) {
-          productAdded = true;
+          found = true;
           return {
             ...product,
-            quantity: product.quantity + productToAdd.quantity,
+            quantity: product.quantity + 1,
           };
+        } else {
+          return product;
         }
-        return product;
       });
-
-      if (!productAdded) {
-        return [...updatedCart, productToAdd];
+      if (!found) {
+        newCart.push({ ...productToAdd, quantity: 1 });
       }
-
-      return updatedCart;
+      saveCart(newCart);
+      return newCart;
     });
   }
 
-  function removeFromCart(productToRemove) {
-    setCart((oldCart) =>
-      oldCart.filter(
-        (product) =>
-          product.productId !== productToRemove.productId ||
-          product.sizes !== productToRemove.sizes
-      )
-    );
+  function removeFromCart(productToRemove: CartProduct) {
+    setCart((oldCart) => {
+      const intermediateCart = oldCart.map((product) => {
+        if (
+          product.productId === productToRemove.productId &&
+          product.size === productToRemove.size
+        ) {
+          if (product.quantity > 1) {
+            return { ...product, quantity: product.quantity - 1 };
+          } else {
+            return { ...product, quantity: 0 };
+          }
+        }
+        return product;
+      });
+      const newCart = intermediateCart.filter(
+        (product) => product.quantity > 0
+      );
+      saveCart(newCart);
+      return newCart;
+    });
   }
 
   return (

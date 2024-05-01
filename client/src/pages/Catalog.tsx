@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
 import { FaCircle, FaHeart, FaRegHeart } from 'react-icons/fa6';
 import { useWishlist } from '../components/useWishlist';
@@ -309,6 +309,7 @@ export function ProductCard({
   const { productId, imageUrl, name, price } = product;
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLiked(isInWishlist(productId));
@@ -350,7 +351,9 @@ export function ProductCard({
         <p>{toDollars(price)}</p>
       </div>
       {showAddToCartButton && (
-        <button className="border-solid bg-black text-white w-full h-10">
+        <button
+          className="border-solid bg-black text-white w-full h-10"
+          onClick={() => navigate(`/p/${productId}`)}>
           Add to bag
         </button>
       )}

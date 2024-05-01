@@ -93,7 +93,7 @@ export function Details() {
       addToCart({
         ...details,
         quantity: 1,
-        sizes: [selectedSize],
+        size: selectedSize,
       });
       setIsCartOpen(true);
     } else {
