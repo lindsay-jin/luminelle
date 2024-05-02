@@ -18,8 +18,16 @@ export function Wishlist() {
         {!user && (
           <div className="flex m-5">
             <p className="text-lg mr-5">Please login to view your wishlist.</p>
-            <button className="underline text-lg" onClick={() => navigate('/')}>
-              Continue shopping!
+            <button
+              className="underline text-lg"
+              onClick={() => navigate('/login')}>
+              Login
+            </button>
+            /
+            <button
+              className="underline text-lg"
+              onClick={() => navigate('/sign-up')}>
+              Register!
             </button>
           </div>
         )}
