@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
 import { FaCircle, FaHeart, FaRegHeart } from 'react-icons/fa6';
 import { useWishlist } from '../components/useWishlist';
+import { Shade } from '../components/Shade';
 
 export type Product = {
   productId: number;
@@ -172,6 +173,12 @@ export function Catalog() {
     });
   }
 
+  function handleResetClick() {
+    setSelectColors([]);
+    setSelectSizes([]);
+    setSelectMaterials([]);
+  }
+
   function handleClickSort() {
     setIsSortOpen(!isSortOpen);
   }
@@ -203,10 +210,19 @@ export function Catalog() {
         <button className="pr-2" onClick={toggleOpen}>
           FILTERS
         </button>
+        <Shade
+          isVisible={isOpen || isSortOpen}
+          onClick={() => {
+            if (isOpen) toggleOpen();
+            if (isSortOpen) handleClickSort();
+          }}
+        />
         {isOpen && (
           <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
             <div className="flex justify-between m-3">
-              <button className="underline">RESET</button>
+              <button className="underline" onClick={handleResetClick}>
+                RESET
+              </button>
               <h2 className="font-bold">FILTERS</h2>
               <button className="underline" onClick={toggleOpen}>
                 CLOSE

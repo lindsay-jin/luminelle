@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useWishlist } from './useWishlist';
 import { CartMenu } from '../pages/CartMenu';
 import { useCart } from './useCart';
+import { Shade } from './Shade';
 
 export type Subcategory = {
   name: string;
@@ -64,7 +65,15 @@ export function Navigation({ categories }: Props) {
 
   return (
     <>
-      <div className="fixed top-0 z-50 w-screen bg-white">
+      <Shade
+        isVisible={isUserOpen || isCartOpen || isSearching}
+        onClick={() => {
+          if (isUserOpen) toggleUserMenu();
+          if (isCartOpen) toggleCartMenu();
+          if (isSearching) toggleSearch();
+        }}
+      />
+      <div className="fixed top-0 z-40 w-screen bg-white">
         {isHomePage && (
           <div>
             <h1

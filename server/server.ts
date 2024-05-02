@@ -147,6 +147,13 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
     const { username, password } = req.body;
     if (!username || !password)
       throw new ClientError(400, 'Username and passwords are required fields.');
+    const checkUserSql = `
+      select "username" from "user"
+      where "username" = $1;
+    `;
+    const checkUserResult = await db.query(checkUserSql, [username]);
+    if (checkUserResult.rows.length > 0)
+      throw new ClientError(401, 'This username is already taken.');
     const hashedPassword = await argon2.hash(password);
     const sql = `
       insert into "user" ("username", "hashedPassword")
@@ -157,7 +164,7 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
     const result = await db.query(sql, params);
     const [rows] = result.rows;
     console.log('rows', rows);
-    if (!rows) throw new ClientError(404, `Username does not exist`);
+    if (!rows) throw new ClientError(404, `Failed to create account.`);
     res.status(201).json(rows);
   } catch (error) {
     next(error);
