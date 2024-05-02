@@ -266,6 +266,78 @@ app.delete(
   }
 );
 
+app.get('/api/shopping-cart', authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new ClientError(401, 'User needs to login to view shopping cart.');
+    }
+    const sql = `
+      select * from "cart"
+      join "product" using ("productId")
+      where "userId" = $1;
+    `;
+    const params = [userId];
+    const result = await db.query(sql, params);
+    const cart = result.rows;
+    if (cart.length === 0) {
+      return res.status(404).json([]);
+    }
+    res.status(200).json(cart);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/shopping-cart/:productId', authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user?.userId;
+    const { productId } = req.params;
+    if (!productId) {
+      throw new ClientError(400, 'ProductId is required.');
+    }
+    if (!Number.isInteger(+productId)) {
+      throw new ClientError(400, 'Product Id must be an integer.');
+    }
+    const sql = `
+      insert into "cart" ("userId", "productId")
+      values ($1, $2)
+      returning *;
+    `;
+    const params = [userId, productId];
+    const result = await db.query(sql, params);
+    const [cartItem] = result.rows;
+    res.status(201).json(cartItem);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete(
+  '/api/shopping-cart/:productId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const userId = req.user?.userId;
+      const { productId } = req.params;
+      if (!Number.isInteger(+productId)) {
+        throw new ClientError(400, 'Product Id must be an integer.');
+      }
+      const sql = `
+      delete from "cart" where "userId" = $1 and "productId" = $2
+      returning *;
+    `;
+      const params = [userId, productId];
+      const result = await db.query(sql, params);
+      const [removedItem] = result.rows;
+      if (!removedItem) throw new ClientError(404, 'Product does not exist.');
+      res.status(200).json(removedItem);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 /*
  * Middleware that handles paths that aren't handled by static middleware
  * or API route handlers.
