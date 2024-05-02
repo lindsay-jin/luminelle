@@ -4,6 +4,7 @@ import { FaRegHeart, FaHeart } from 'react-icons/fa6';
 import { FaCircle } from 'react-icons/fa';
 import { toDollars } from '../../lib/to-dollars';
 import { useWishlist } from '../components/useWishlist';
+import { useCart } from '../components/useCart';
 import { Product } from './Catalog';
 
 export type ProductDetails = Product & {
@@ -18,6 +19,8 @@ export function Details() {
   const [isOpen, setIsOpen] = useState(false);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('');
+  const { addToCart, setIsCartOpen } = useCart();
 
   useEffect(() => {
     async function loadDetails() {
@@ -85,6 +88,19 @@ export function Details() {
     setIsLiked(!isLiked);
   }
 
+  function handleAddToCart() {
+    if (details && selectedSize) {
+      addToCart({
+        ...details,
+        quantity: 1,
+        size: selectedSize,
+      });
+      setIsCartOpen(true);
+    } else {
+      alert('Please select a size before adding to cart');
+    }
+  }
+
   return (
     <div className="flex pt-4">
       {isOpen && (
@@ -105,21 +121,30 @@ export function Details() {
           </div>
         </div>
       )}
-      <div className="w-1/2 relative">
-        <img src={imageUrl} alt={name} />
-        {isLiked ? (
-          <FaHeart
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
-            onClick={toggleWishlist}
-          />
-        ) : (
-          <FaRegHeart
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
-            onClick={toggleWishlist}
-          />
-        )}
+      <div className="w-1/2 relative pr-10">
+        {imageUrl.map((url, index) => (
+          <div key={index} className="relative my-2">
+            <img
+              src={url}
+              alt={`${name} ${index}`}
+              className="w-full h-full object-cover"
+            />
+            {index === 0 &&
+              (isLiked ? (
+                <FaHeart
+                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  onClick={toggleWishlist}
+                />
+              ) : (
+                <FaRegHeart
+                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  onClick={toggleWishlist}
+                />
+              ))}
+          </div>
+        ))}
       </div>
-      <div className="w-1/2 mx-8 flex flex-col">
+      <div className="fixed top-14 right-[-10px] w-1/2 flex flex-col pr-6">
         <div className="mt-3 mb-3">
           <p className="py-3 text-xl">{name}</p>
           <p className="py-3">{toDollars(price)}</p>
@@ -140,14 +165,21 @@ export function Details() {
           <p className="py-3">SELECT SIZE:</p>
           <div>
             {sizes.map((size) => (
-              <button key={size} className="border-solid pl-12 pb-6">
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`border-solid ml-12 mb-6 px-2 ${
+                  selectedSize === size ? 'border border-black' : ''
+                }`}>
                 {size}
               </button>
             ))}
           </div>
         </div>
         <div className="flex justify-center">
-          <button className="mx-16 border-solid bg-black text-white w-full h-10">
+          <button
+            className="mx-16 border-solid bg-black text-white w-full h-10"
+            onClick={handleAddToCart}>
             Add to bag
           </button>
         </div>

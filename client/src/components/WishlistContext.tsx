@@ -40,7 +40,9 @@ export function WishlistProvider({ children }) {
       });
       if (!response.ok) throw new Error('Error adding to wishlist.');
       await response.json();
-      setWishlist([...wishlist, product]);
+      if (!wishlist.some((item) => item.productId === product.productId)) {
+        setWishlist((oldWishlist) => [...oldWishlist, product]);
+      }
     } catch (error) {
       setError(error);
     } finally {

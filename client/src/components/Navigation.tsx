@@ -12,6 +12,9 @@ import { UserMenu } from '../pages/UserMenu';
 import { SearchBar } from '../pages/SearchBar';
 import { useState } from 'react';
 import { useWishlist } from './useWishlist';
+import { CartMenu } from '../pages/CartMenu';
+import { useCart } from './useCart';
+import { Shade } from './Shade';
 
 export type Subcategory = {
   name: string;
@@ -36,6 +39,7 @@ export function Navigation({ categories }: Props) {
   const location = useLocation();
   const { user, handleSignOut } = useUser();
   const { wishlist } = useWishlist();
+  const { isCartOpen, setIsCartOpen } = useCart();
 
   const isHomePage = location.pathname === '/';
 
@@ -55,9 +59,21 @@ export function Navigation({ categories }: Props) {
     setIsUserOpen(!isUserOpen);
   }
 
+  function toggleCartMenu() {
+    setIsCartOpen(!isCartOpen);
+  }
+
   return (
     <>
-      <div className="fixed top-0 z-50 w-screen bg-white">
+      <Shade
+        isVisible={isUserOpen || isCartOpen || isSearching}
+        onClick={() => {
+          if (isUserOpen) toggleUserMenu();
+          if (isCartOpen) toggleCartMenu();
+          if (isSearching) toggleSearch();
+        }}
+      />
+      <div className="fixed top-0 z-40 w-screen bg-white">
         {isHomePage && (
           <div>
             <h1
@@ -108,7 +124,10 @@ export function Navigation({ categories }: Props) {
                 onClick={() => navigate('/wishlist')}
               />
             )}
-            <IoBagOutline className="cursor-pointer mx-2" />
+            <IoBagOutline
+              className="cursor-pointer mx-2"
+              onClick={toggleCartMenu}
+            />
           </div>
           <UserMenu
             user={user}
@@ -117,6 +136,7 @@ export function Navigation({ categories }: Props) {
             toggleUserMenu={toggleUserMenu}
           />
           {isSearching && <SearchBar toggleSearch={toggleSearch} />}
+          <CartMenu isOpen={isCartOpen} toggleCartMenu={toggleCartMenu} />
         </nav>
       </div>
       <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>

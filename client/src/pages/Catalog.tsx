@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toDollars } from '../../lib/to-dollars';
 import { FaCircle, FaHeart, FaRegHeart } from 'react-icons/fa6';
 import { useWishlist } from '../components/useWishlist';
+import { Shade } from '../components/Shade';
 
 export type Product = {
   productId: number;
-  imageUrl: string;
+  imageUrl: string[];
   name: string;
   price: number;
   colors: string[];
@@ -172,6 +173,12 @@ export function Catalog() {
     });
   }
 
+  function handleResetClick() {
+    setSelectColors([]);
+    setSelectSizes([]);
+    setSelectMaterials([]);
+  }
+
   function handleClickSort() {
     setIsSortOpen(!isSortOpen);
   }
@@ -203,10 +210,19 @@ export function Catalog() {
         <button className="pr-2" onClick={toggleOpen}>
           FILTERS
         </button>
+        <Shade
+          isVisible={isOpen || isSortOpen}
+          onClick={() => {
+            if (isOpen) toggleOpen();
+            if (isSortOpen) handleClickSort();
+          }}
+        />
         {isOpen && (
           <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
             <div className="flex justify-between m-3">
-              <button className="underline">RESET</button>
+              <button className="underline" onClick={handleResetClick}>
+                RESET
+              </button>
               <h2 className="font-bold">FILTERS</h2>
               <button className="underline" onClick={toggleOpen}>
                 CLOSE
@@ -265,7 +281,7 @@ export function Catalog() {
         <button className="pr-2">|</button>
         <button onClick={handleClickSort}>SORT BY: {selectOption}</button>
         {isSortOpen && (
-          <div className="absolute right-0 bg-white">
+          <div className="absolute right-0 z-50 bg-white">
             <ul>
               {options.map((option) => (
                 <li
@@ -309,6 +325,7 @@ export function ProductCard({
   const { productId, imageUrl, name, price } = product;
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLiked(isInWishlist(productId));
@@ -328,7 +345,7 @@ export function ProductCard({
       <div className="w-full relative">
         <Link to={`/p/${productId}`} onClick={onClick}>
           <img
-            src={imageUrl}
+            src={imageUrl[0]}
             alt={name}
             className="w-full h-full object-cover aspect-[5/6]"
           />
@@ -350,7 +367,9 @@ export function ProductCard({
         <p>{toDollars(price)}</p>
       </div>
       {showAddToCartButton && (
-        <button className="border-solid bg-black text-white w-full h-10">
+        <button
+          className="border-solid bg-black text-white w-full h-10"
+          onClick={() => navigate(`/p/${productId}`)}>
           Add to bag
         </button>
       )}
