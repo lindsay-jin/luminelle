@@ -6,7 +6,7 @@ import { useWishlist } from '../components/useWishlist';
 
 export type Product = {
   productId: number;
-  imageUrl: string;
+  imageUrl: string[];
   name: string;
   price: number;
   colors: string[];
@@ -265,7 +265,7 @@ export function Catalog() {
         <button className="pr-2">|</button>
         <button onClick={handleClickSort}>SORT BY: {selectOption}</button>
         {isSortOpen && (
-          <div className="absolute right-0 bg-white">
+          <div className="absolute right-0 z-50 bg-white">
             <ul>
               {options.map((option) => (
                 <li
@@ -329,7 +329,7 @@ export function ProductCard({
       <div className="w-full relative">
         <Link to={`/p/${productId}`} onClick={onClick}>
           <img
-            src={imageUrl}
+            src={imageUrl[0]}
             alt={name}
             className="w-full h-full object-cover aspect-[5/6]"
           />

@@ -41,7 +41,7 @@ export function CartMenu({ toggleCartMenu, isOpen }: Props) {
         </div>
         <div className="flex justify-center">
           <Link to="/shopping-cart" onClick={toggleCartMenu}>
-            <button className="underline font-bold">Go to shopping bag</button>
+            <button className="underline">Go to shopping bag</button>
           </Link>
         </div>
       </div>
@@ -66,7 +66,7 @@ export function CartCard({ product }: cardProps) {
   return (
     <div className="flex my-1">
       <div className={`${isShoppingCart ? 'pr-4' : 'w-1/2'}`}>
-        <img src={imageUrl} alt={name} className="h-[250px] object-cover" />
+        <img src={imageUrl[0]} alt={name} className="h-[250px] object-cover" />
       </div>
       <div className="w-1/2 pl-4 flex flex-col justify-between">
         <div>

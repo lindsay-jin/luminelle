@@ -121,21 +121,30 @@ export function Details() {
           </div>
         </div>
       )}
-      <div className="w-1/2 relative">
-        <img src={imageUrl} alt={name} />
-        {isLiked ? (
-          <FaHeart
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
-            onClick={toggleWishlist}
-          />
-        ) : (
-          <FaRegHeart
-            className="absolute top-5 right-5 text-2xl cursor-pointer"
-            onClick={toggleWishlist}
-          />
-        )}
+      <div className="w-1/2 relative pr-10">
+        {imageUrl.map((url, index) => (
+          <div key={index} className="relative my-2">
+            <img
+              src={url}
+              alt={`${name} ${index}`}
+              className="w-full h-full object-cover"
+            />
+            {index === 0 &&
+              (isLiked ? (
+                <FaHeart
+                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  onClick={toggleWishlist}
+                />
+              ) : (
+                <FaRegHeart
+                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  onClick={toggleWishlist}
+                />
+              ))}
+          </div>
+        ))}
       </div>
-      <div className="w-1/2 mx-8 flex flex-col">
+      <div className="fixed top-14 right-[-10px] w-1/2 flex flex-col pr-6">
         <div className="mt-3 mb-3">
           <p className="py-3 text-xl">{name}</p>
           <p className="py-3">{toDollars(price)}</p>

@@ -32,7 +32,9 @@ export function Subheader({ categories }: Props) {
             <li key={subcategory.name} className="pl-5 pr-9">
               <Link
                 to={subcategory.path}
-                className={activeLink === subcategory.name ? 'underline' : ''}
+                className={activeLink === subcategory.name ? 'font-medium' : ''}
+                onMouseEnter={() => setActiveLink(subcategory.name)}
+                onMouseLeave={() => setActiveLink(null)}
                 onClick={() => setActiveLink(subcategory.name)}>
                 {subcategory.name}{' '}
               </Link>

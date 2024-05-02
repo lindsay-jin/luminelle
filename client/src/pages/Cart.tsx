@@ -13,7 +13,14 @@ export function Cart() {
   return (
     <div className="flex m-5 pt-4">
       <div className="bg-slate-100 w-2/3 mr-5">
-        <h2 className="ml-5 mt-3">Shopping bag</h2>
+        <h2 className="ml-5 mt-3">
+          {cart.length === 0 ? 'Shopping bag' : `Shopping bag(${cart.length})`}
+        </h2>
+        {cart.length === 0 && (
+          <div className="flex justify-center mt-6">
+            <p>No item in shopping cart.</p>
+          </div>
+        )}
         <div className="ml-5 mb-5">
           {cart.map((product, index) => (
             <CartCard key={index} product={product} />

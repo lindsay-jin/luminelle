@@ -93,6 +93,7 @@ app.get(
         colors: product.colors ? JSON.parse(product.colors) : [],
         sizes: product.sizes ? JSON.parse(product.sizes) : [],
         materials: product.materials ? JSON.parse(product.materials) : [],
+        imageUrl: product.imageUrl ? JSON.parse(product.imageUrl) : [],
       }));
       res.json(products);
     } catch (err) {
@@ -115,6 +116,7 @@ app.get('/api/p/:productId', async (req, res, next) => {
     product.sizes = JSON.parse(product.sizes);
     product.materials = JSON.parse(product.materials);
     product.colors = JSON.parse(product.colors);
+    product.imageUrl = JSON.parse(product.imageUrl);
     res.json(product);
   } catch (err) {
     next(err);
