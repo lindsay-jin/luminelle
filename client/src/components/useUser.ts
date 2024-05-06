@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { AppContext, AppContextValues } from './UserContext';
+import { UserContext, UserContextValues } from './UserContext';
 export type { User } from './UserContext';
 
-export function useUser(): AppContextValues {
-  const values = useContext(AppContext);
+export function useUser(): UserContextValues {
+  const values = useContext(UserContext);
   if (!values) throw new Error('useUser must be used inside a UserProvider');
   return values;
 }

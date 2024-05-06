@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { Product } from '../pages/Catalog';
 import { saveCart, readCart } from '../../lib/data';
+import { useUser } from './useUser';
 
 export type CartProduct = Product & {
   quantity: number;
