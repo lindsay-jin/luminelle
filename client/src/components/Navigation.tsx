@@ -41,6 +41,7 @@ export function Navigation({ categories }: Props) {
   const { wishlist } = useWishlist();
   const { isCartOpen, setIsCartOpen } = useCart();
 
+
   const isHomePage = location.pathname === '/';
 
   function handleMouseOver(categoryName: string) {

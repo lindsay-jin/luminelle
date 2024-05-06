@@ -281,7 +281,7 @@ app.get('/api/shopping-cart', authMiddleware, async (req, res, next) => {
     const result = await db.query(sql, params);
     const cart = result.rows;
     if (cart.length === 0) {
-      return res.status(404).json([]);
+      return res.status(200).json([]);
     }
     res.status(200).json(cart);
   } catch (error) {
