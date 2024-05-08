@@ -1,11 +1,12 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { Product } from '../pages/Catalog';
-import { saveCart, readCart } from '../../lib/data';
+import { saveCart, readCart, clearCart } from '../../lib/data';
 import { useUser } from './useUser';
 
 export type CartProduct = Product & {
   quantity: number;
   size: string;
+  price: number;
 };
 
 export type CartValues = {
@@ -32,7 +33,11 @@ export function CartProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const loadCartFromServer = useCallback(async () => {
-    if (!user) return null;
+    setIsLoading(true);
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
     try {
       const response = await fetch('/api/shopping-cart', {
         method: 'GET',
@@ -52,22 +57,24 @@ export function CartProvider({ children }) {
     }
   }, [user, token]);
 
-  async function saveCartToServer(cartItems){
-    if(!user) return null;
-    try{
-      for (const item of cartItems){
+  async function saveCartToServer(cartItems) {
+    if (!user) return null;
+    try {
+      for (const item of cartItems) {
         const response = await fetch(`/api/shopping-cart/${item.productId}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/jason',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify(item),
         });
-        if(!response.ok) throw new Error('Failed to save cart')
+        if (!response.ok) throw new Error('Failed to save cart');
       }
-    loadCartFromServer();
-    }catch(error){
-      setError(error)
+      clearCart();
+      loadCartFromServer();
+    } catch (error) {
+      setError(error);
     }
   }
 
@@ -76,18 +83,19 @@ export function CartProvider({ children }) {
       loadCartFromServer();
     } else {
       setCart(readCart());
+      setIsLoading(false);
     }
   }, [user, loadCartFromServer]);
 
-  useEffect(()=>{
-    if(user && cart.length === 0){
+  useEffect(() => {
+    if (user && cart.length === 0) {
       const localCart = readCart();
-      if(localCart.length > 0){
+      if (localCart.length > 0) {
         saveCartToServer(localCart);
         saveCart(localCart);
       }
     }
-  })
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -99,25 +107,29 @@ export function CartProvider({ children }) {
         Cannot load products due to{' '}
         {error instanceof Error ? error.message : 'unknown error'}
       </div>
-    )
+    );
   }
 
-  async function addToCart(productToAdd: CartProduct){
-    if (user){
+  async function addToCart(productToAdd: CartProduct) {
+    if (user) {
       try {
-        const response = await fetch(`/api/shopping-cart/${productToAdd.productId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if(!response.ok) throw new Error('Failed to add item to cart.')
+        const response = await fetch(
+          `/api/shopping-cart/${productToAdd.productId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(productToAdd),
+          }
+        );
+        if (!response.ok) throw new Error('Failed to add item to cart.');
         loadCartFromServer();
-      }catch(error){
-        setError(error)
+      } catch (error) {
+        setError(error);
       }
-    } else{
+    } else {
       let found = false;
       setCart((oldCart) => {
         const newCart = oldCart.map((product) => {
@@ -144,23 +156,25 @@ export function CartProvider({ children }) {
   }
 
   async function removeFromCart(productToRemove: CartProduct) {
-    console.log('user', user)
-    console.log('token', token)
-    if(user){
-      try{
-        const response = await fetch(`/api/shopping-cart/${productToRemove.productId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if(!response.ok) throw new Error('Failed to remove item from cart.');
+    if (user) {
+      try {
+        const response = await fetch(
+          `/api/shopping-cart/${productToRemove.productId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(productToRemove),
+          }
+        );
+        if (!response.ok) throw new Error('Failed to remove item from cart.');
         loadCartFromServer();
-      }catch(error){
-        setError(error)
+      } catch (error) {
+        setError(error);
       }
-    }else{
+    } else {
       setCart((oldCart) => {
         const intermediateCart = oldCart.map((product) => {
           if (

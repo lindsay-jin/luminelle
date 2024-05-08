@@ -10,6 +10,7 @@ import {
 } from './lib/index.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import { constants } from 'node:http2';
 
 type User = {
   userId: number;
@@ -209,7 +210,7 @@ app.get('/api/wishlist', authMiddleware, async (req, res, next) => {
     const result = await db.query(sql, params);
     const wishlist = result.rows;
     if (wishlist.length === 0) {
-      return res.status(404).json({ message: 'No items in wishlist.' });
+      return res.status(200).json([]);
     }
     res.status(200).json(wishlist);
   } catch (error) {
@@ -273,10 +274,11 @@ app.get('/api/shopping-cart', authMiddleware, async (req, res, next) => {
       throw new ClientError(401, 'User needs to login to view shopping cart.');
     }
     const sql = `
-      select * from "cart"
-      join "product" using ("productId")
+      select * from "cartItem"
+
       where "userId" = $1;
     `;
+    // join "product" using ("productId")
     const params = [userId];
     const result = await db.query(sql, params);
     const cart = result.rows;
@@ -289,29 +291,48 @@ app.get('/api/shopping-cart', authMiddleware, async (req, res, next) => {
   }
 });
 
-app.post('/api/shopping-cart/:productId', authMiddleware, async (req, res, next) => {
-  try {
-    const userId = req.user?.userId;
-    const { productId } = req.params;
-    if (!productId) {
-      throw new ClientError(400, 'ProductId is required.');
-    }
-    if (!Number.isInteger(+productId)) {
-      throw new ClientError(400, 'Product Id must be an integer.');
-    }
-    const sql = `
-      insert into "cart" ("userId", "productId")
-      values ($1, $2)
+app.post(
+  '/api/shopping-cart/:productId',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const userId = req.user?.userId;
+      const { quantity, size, price, name, colors } = req.body;
+      const { imageUrl } = req.body;
+      const { productId } = req.params;
+      if (!productId) {
+        throw new ClientError(400, 'ProductId is required.');
+      }
+      if (!Number.isInteger(+productId)) {
+        throw new ClientError(400, 'Product Id must be an integer.');
+      }
+      const photo = imageUrl[0];
+      const sql = `
+      insert into "cartItem" ("userId", "productId", "quantity", "price", "size", "imageUrl", "name", "colors")
+      values ($1, $2, $3, $4, $5, $6, $7, $8)
+      on conflict ("userId", "productId", "size")
+      do update
+        set "quantity" = "cartItem"."quantity" + "excluded"."quantity"
       returning *;
     `;
-    const params = [userId, productId];
-    const result = await db.query(sql, params);
-    const [cartItem] = result.rows;
-    res.status(201).json(cartItem);
-  } catch (error) {
-    next(error);
+      const params = [
+        userId,
+        productId,
+        quantity,
+        price,
+        size,
+        photo,
+        name,
+        colors,
+      ];
+      const result = await db.query(sql, params);
+      const [cartItem] = result.rows;
+      res.status(201).json(cartItem);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 app.delete(
   '/api/shopping-cart/:productId',
@@ -320,18 +341,43 @@ app.delete(
     try {
       const userId = req.user?.userId;
       const { productId } = req.params;
+      const { size } = req.body;
+
       if (!Number.isInteger(+productId)) {
         throw new ClientError(400, 'Product Id must be an integer.');
       }
-      const sql = `
-      delete from "cart" where "userId" = $1 and "productId" = $2
-      returning *;
+      if (size === undefined) {
+        throw new ClientError(400, 'Size is required.');
+      }
+
+      const sqlUpdate = `
+      UPDATE "cartItem"
+      SET "quantity" = "quantity" - 1
+      WHERE "userId" = $1 AND "productId" = $2 AND "size" = $3 AND "quantity" > 1
+      RETURNING *;
     `;
-      const params = [userId, productId];
-      const result = await db.query(sql, params);
-      const [removedItem] = result.rows;
-      if (!removedItem) throw new ClientError(404, 'Product does not exist.');
-      res.status(200).json(removedItem);
+
+      const sqlDelete = `
+      DELETE FROM "cartItem"
+      WHERE "userId" = $1 AND "productId" = $2 AND "size" = $3 AND "quantity" = 1
+      RETURNING *;
+    `;
+
+      const params = [userId, productId, size];
+      let result = await db.query(sqlUpdate, params);
+
+      if (result.rowCount === 0) {
+        result = await db.query(sqlDelete, params);
+      }
+
+      const [modifiedItem] = result.rows;
+      if (!modifiedItem)
+        throw new ClientError(
+          404,
+          'Product does not exist or quantity update failed.'
+        );
+
+      res.status(200).json(modifiedItem);
     } catch (error) {
       next(error);
     }

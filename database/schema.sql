@@ -44,13 +44,18 @@ CREATE TABLE "wishlist" (
   "createdAt" timestamptz DEFAULT 'now()'
 );
 
-CREATE TABLE "cart" (
-  "cartId" serial PRIMARY KEY,
+CREATE TABLE "cartItem" (
+  "cartItemId" serial PRIMARY KEY,
   "userId" int,
   "productId" int,
   "quantity" int,
   "size" text,
-  "createdAt" timestamptz DEFAULT 'now()'
+  "price" int,
+  "imageUrl" text,
+  "name" text,
+  "colors" text,
+  "createdAt" timestamptz DEFAULT 'now()',
+  UNIQUE ("userId", "productId", "size")
 );
 
 ALTER TABLE "subcategory" ADD FOREIGN KEY ("categoryId") REFERENCES "category" ("categoryId");
@@ -63,6 +68,6 @@ ALTER TABLE "wishlist" ADD FOREIGN KEY ("userId") REFERENCES "user" ("userId");
 
 ALTER TABLE "wishlist" ADD FOREIGN KEY ("productId") REFERENCES "product" ("productId");
 
-ALTER TABLE "cart" ADD FOREIGN KEY ("userId") REFERENCES "user" ("userId");
+ALTER TABLE "cartItem" ADD FOREIGN KEY ("userId") REFERENCES "user" ("userId");
 
-ALTER TABLE "cart" ADD FOREIGN KEY ("productId") REFERENCES "product" ("productId");
+ALTER TABLE "cartItem" ADD FOREIGN KEY ("productId") REFERENCES "product" ("productId");
