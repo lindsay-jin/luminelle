@@ -17,8 +17,6 @@ export function CartMenu({ toggleCartMenu, isOpen }: Props) {
     0
   );
 
-  console.log('cart', cart);
-
   return (
     <div className="absolute right-0 top-0 h-screen overflow-y-auto w-1/2 px-10 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
       <div className="flex justify-between my-5">

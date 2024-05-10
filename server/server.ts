@@ -91,7 +91,7 @@ app.get(
       const result = await db.query(sql, params);
       const products = result.rows.map((product) => ({
         ...product,
-        // colors: product.colors ? JSON.parse(product.colors) : [],
+        colors: product.colors ? JSON.parse(product.colors) : [],
         sizes: product.sizes ? JSON.parse(product.sizes) : [],
         materials: product.materials ? JSON.parse(product.materials) : [],
         imageUrl: product.imageUrl ? JSON.parse(product.imageUrl) : [],
