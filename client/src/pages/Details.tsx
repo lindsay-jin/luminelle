@@ -58,18 +58,18 @@ export function Details() {
 
   const { name, imageUrl, price, colors, materials, sizes, description } =
     details;
-  const customColors = {
-    black: '000000',
-    white: 'ffffff',
-    grey: '#9ca3af',
-    natural: '#fff7ed',
-    brown: '#431407',
-    yellow: '#fde047',
-    red: '#be123c',
-    pink: '#f9a8d4',
-    green: '#16a34a',
-    blue: '#0ea5e9',
-  };
+  // const customColors = {
+  //   black: '000000',
+  //   white: 'ffffff',
+  //   grey: '#9ca3af',
+  //   natural: '#fff7ed',
+  //   brown: '#431407',
+  //   yellow: '#fde047',
+  //   red: '#be123c',
+  //   pink: '#f9a8d4',
+  //   green: '#16a34a',
+  //   blue: '#0ea5e9',
+  // };
 
   function toggleMenu() {
     setIsOpen(!isOpen);
@@ -153,11 +153,7 @@ export function Details() {
         <div className="mb-3">
           <p className="pb-3">COLOR: {colors}</p>
           {colors.map((color) => (
-            <FaCircle
-              key={color}
-              color={customColors[color]}
-              className="my-3"
-            />
+            <FaCircle key={color} color={color} className="my-3" />
           ))}
           <hr className="my-3" />
         </div>

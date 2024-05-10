@@ -50,10 +50,6 @@ CREATE TABLE "cartItem" (
   "productId" int,
   "quantity" int,
   "size" text,
-  "price" int,
-  "imageUrl" text,
-  "name" text,
-  "colors" text,
   "createdAt" timestamptz DEFAULT 'now()',
   UNIQUE ("userId", "productId", "size")
 );

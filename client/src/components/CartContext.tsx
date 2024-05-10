@@ -57,45 +57,43 @@ export function CartProvider({ children }) {
     }
   }, [user, token]);
 
-  async function saveCartToServer(cartItems) {
-    if (!user) return null;
-    try {
-      for (const item of cartItems) {
-        const response = await fetch(`/api/shopping-cart/${item.productId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(item),
-        });
-        if (!response.ok) throw new Error('Failed to save cart');
+  const saveCartToServer = useCallback(
+    async (cartItems) => {
+      if (!user) return null;
+      try {
+        for (const item of cartItems) {
+          const response = await fetch(`/api/shopping-cart/${item.productId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(item),
+          });
+          if (!response.ok) throw new Error('Failed to save cart');
+        }
+        clearCart();
+        loadCartFromServer();
+      } catch (error) {
+        setError(error);
       }
-      clearCart();
-      loadCartFromServer();
-    } catch (error) {
-      setError(error);
-    }
-  }
+    },
+    [user, token, loadCartFromServer]
+  );
 
   useEffect(() => {
     if (user) {
-      loadCartFromServer();
-    } else {
-      setCart(readCart());
-      setIsLoading(false);
-    }
-  }, [user, loadCartFromServer]);
-
-  useEffect(() => {
-    if (user && cart.length === 0) {
       const localCart = readCart();
       if (localCart.length > 0) {
         saveCartToServer(localCart);
         saveCart(localCart);
       }
+      loadCartFromServer();
+    } else {
+      setCart(readCart());
+      setIsLoading(false);
     }
-  });
+  }, [user, loadCartFromServer, saveCartToServer]);
 
   if (isLoading) {
     return <div>Loading...</div>;

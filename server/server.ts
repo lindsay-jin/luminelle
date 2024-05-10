@@ -91,7 +91,7 @@ app.get(
       const result = await db.query(sql, params);
       const products = result.rows.map((product) => ({
         ...product,
-        colors: product.colors ? JSON.parse(product.colors) : [],
+        // colors: product.colors ? JSON.parse(product.colors) : [],
         sizes: product.sizes ? JSON.parse(product.sizes) : [],
         materials: product.materials ? JSON.parse(product.materials) : [],
         imageUrl: product.imageUrl ? JSON.parse(product.imageUrl) : [],
@@ -275,16 +275,21 @@ app.get('/api/shopping-cart', authMiddleware, async (req, res, next) => {
     }
     const sql = `
       select * from "cartItem"
-
+      join "product" using ("productId")
       where "userId" = $1;
     `;
-    // join "product" using ("productId")
     const params = [userId];
     const result = await db.query(sql, params);
     const cart = result.rows;
     if (cart.length === 0) {
       return res.status(200).json([]);
     }
+    cart.forEach((cartItem) => {
+      cartItem.sizes = JSON.parse(cartItem.sizes);
+      cartItem.materials = JSON.parse(cartItem.materials);
+      cartItem.colors = JSON.parse(cartItem.colors);
+      cartItem.imageUrl = JSON.parse(cartItem.imageUrl);
+    });
     res.status(200).json(cart);
   } catch (error) {
     next(error);
@@ -297,8 +302,7 @@ app.post(
   async (req, res, next) => {
     try {
       const userId = req.user?.userId;
-      const { quantity, size, price, name, colors } = req.body;
-      const { imageUrl } = req.body;
+      const { quantity, size } = req.body;
       const { productId } = req.params;
       if (!productId) {
         throw new ClientError(400, 'ProductId is required.');
@@ -306,25 +310,15 @@ app.post(
       if (!Number.isInteger(+productId)) {
         throw new ClientError(400, 'Product Id must be an integer.');
       }
-      const photo = imageUrl[0];
       const sql = `
-      insert into "cartItem" ("userId", "productId", "quantity", "price", "size", "imageUrl", "name", "colors")
-      values ($1, $2, $3, $4, $5, $6, $7, $8)
+      insert into "cartItem" ("userId", "productId", "quantity", "size")
+      values ($1, $2, $3, $4)
       on conflict ("userId", "productId", "size")
       do update
         set "quantity" = "cartItem"."quantity" + "excluded"."quantity"
       returning *;
     `;
-      const params = [
-        userId,
-        productId,
-        quantity,
-        price,
-        size,
-        photo,
-        name,
-        colors,
-      ];
+      const params = [userId, productId, quantity, size];
       const result = await db.query(sql, params);
       const [cartItem] = result.rows;
       res.status(201).json(cartItem);
