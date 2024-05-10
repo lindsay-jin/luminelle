@@ -3,9 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { FaHeart, FaRegUser, FaUser } from 'react-icons/fa6';
 import { IoSearch } from 'react-icons/io5';
 import { FaRegHeart } from 'react-icons/fa6';
-// import { IoMdHeart } from "react-icons/io";
 import { IoBagOutline } from 'react-icons/io5';
-// import { IoBag } from "react-icons/io5";
+import { IoBag } from 'react-icons/io5';
 import { useUser } from '../components/useUser';
 import { CategoryMenu } from '../pages/CategoryMenu';
 import { UserMenu } from '../pages/UserMenu';
@@ -39,8 +38,7 @@ export function Navigation({ categories }: Props) {
   const location = useLocation();
   const { user, handleSignOut } = useUser();
   const { wishlist } = useWishlist();
-  const { isCartOpen, setIsCartOpen } = useCart();
-
+  const { isCartOpen, setIsCartOpen, cart } = useCart();
 
   const isHomePage = location.pathname === '/';
 
@@ -125,10 +123,14 @@ export function Navigation({ categories }: Props) {
                 onClick={() => navigate('/wishlist')}
               />
             )}
-            <IoBagOutline
-              className="cursor-pointer mx-2"
-              onClick={toggleCartMenu}
-            />
+            {cart.length === 0 ? (
+              <IoBagOutline
+                className="cursor-pointer mx-2"
+                onClick={toggleCartMenu}
+              />
+            ) : (
+              <IoBag className="cursor-pointer mx-2" onClick={toggleCartMenu} />
+            )}
           </div>
           <UserMenu
             user={user}

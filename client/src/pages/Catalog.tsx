@@ -357,7 +357,7 @@ export function ProductCard({
           />
         ) : (
           <FaRegHeart
-            className="absolute top-5 right-5 cursor-pointer"
+            className="absolute top-5 right-5 cursor-pointer text-xl"
             onClick={toggleWishlist}
           />
         )}
