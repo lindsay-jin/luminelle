@@ -154,7 +154,9 @@ export function Details() {
           <p className="pb-3">
             COLOR:
             {colors.map((color) => (
-              <span className="mx-1">{color} </span>
+              <span key={color} className="mx-1">
+                {color}{' '}
+              </span>
             ))}
           </p>
           <div className="flex flex-row">
@@ -162,6 +164,8 @@ export function Details() {
               <FaCircle
                 key={color}
                 color={customColors[color]}
+                stroke="black"
+                strokeWidth="17"
                 className="mx-2 my-3"
               />
             ))}
