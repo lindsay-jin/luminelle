@@ -24,8 +24,6 @@ export function Login() {
       }
       const { user, token } = await res.json();
       handleSignIn(user, token);
-      console.log('Signed In', user);
-      console.log('Received token:', token);
       navigate('/');
     } catch (err) {
       alert(`Error signing in: ${err}`);

@@ -50,3 +50,7 @@ export function readCart() {
   }
   return [];
 }
+
+export function clearCart() {
+  localStorage.removeItem(cartKey);
+}

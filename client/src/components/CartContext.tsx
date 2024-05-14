@@ -1,10 +1,12 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { Product } from '../pages/Catalog';
-import { saveCart, readCart } from '../../lib/data';
+import { saveCart, readCart, clearCart } from '../../lib/data';
+import { useUser } from './useUser';
 
 export type CartProduct = Product & {
   quantity: number;
   size: string;
+  price: number;
 };
 
 export type CartValues = {
@@ -26,57 +28,172 @@ export const CartContext = createContext<CartValues>({
 export function CartProvider({ children }) {
   const [cart, setCart] = useState<CartProduct[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { user, token } = useUser();
+  const [error, setError] = useState<unknown>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadCartFromServer = useCallback(async () => {
+    setIsLoading(true);
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const response = await fetch('/api/shopping-cart', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok)
+        throw new Error(`Fetch error with status ${response.status}`);
+      const result = await response.json();
+      setCart(result);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, token]);
+
+  const saveCartToServer = useCallback(
+    async (cartItems) => {
+      if (!user) return null;
+      try {
+        for (const item of cartItems) {
+          const response = await fetch(`/api/shopping-cart/${item.productId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(item),
+          });
+          if (!response.ok) throw new Error('Failed to save cart');
+        }
+        clearCart();
+        loadCartFromServer();
+      } catch (error) {
+        setError(error);
+      }
+    },
+    [user, token, loadCartFromServer]
+  );
 
   useEffect(() => {
-    setCart(readCart());
-  }, []);
-
-  function addToCart(productToAdd: CartProduct) {
-    let found = false;
-    setCart((oldCart) => {
-      const newCart = oldCart.map((product) => {
-        if (
-          product.productId === productToAdd.productId &&
-          product.size === productToAdd.size
-        ) {
-          found = true;
-          return {
-            ...product,
-            quantity: product.quantity + 1,
-          };
-        } else {
-          return product;
-        }
-      });
-      if (!found) {
-        newCart.push({ ...productToAdd, quantity: 1 });
+    if (user) {
+      const localCart = readCart();
+      if (localCart.length > 0) {
+        saveCartToServer(localCart);
+        saveCart(localCart);
       }
-      saveCart(newCart);
-      return newCart;
-    });
+      loadCartFromServer();
+    } else {
+      setCart(readCart());
+      setIsLoading(false);
+    }
+  }, [user, loadCartFromServer, saveCartToServer]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  function removeFromCart(productToRemove: CartProduct) {
-    setCart((oldCart) => {
-      const intermediateCart = oldCart.map((product) => {
-        if (
-          product.productId === productToRemove.productId &&
-          product.size === productToRemove.size
-        ) {
-          if (product.quantity > 1) {
-            return { ...product, quantity: product.quantity - 1 };
-          } else {
-            return { ...product, quantity: 0 };
+  if (error) {
+    return (
+      <div>
+        Cannot load products due to{' '}
+        {error instanceof Error ? error.message : 'unknown error'}
+      </div>
+    );
+  }
+
+  async function addToCart(productToAdd: CartProduct) {
+    if (user) {
+      try {
+        const response = await fetch(
+          `/api/shopping-cart/${productToAdd.productId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(productToAdd),
           }
+        );
+        if (!response.ok) throw new Error('Failed to add item to cart.');
+        loadCartFromServer();
+      } catch (error) {
+        setError(error);
+      }
+    } else {
+      let found = false;
+      setCart((oldCart) => {
+        const newCart = oldCart.map((product) => {
+          if (
+            product.productId === productToAdd.productId &&
+            product.size === productToAdd.size
+          ) {
+            found = true;
+            return {
+              ...product,
+              quantity: product.quantity + 1,
+            };
+          } else {
+            return product;
+          }
+        });
+        if (!found) {
+          newCart.push({ ...productToAdd, quantity: 1 });
         }
-        return product;
+        saveCart(newCart);
+        return newCart;
       });
-      const newCart = intermediateCart.filter(
-        (product) => product.quantity > 0
-      );
-      saveCart(newCart);
-      return newCart;
-    });
+    }
+  }
+
+  async function removeFromCart(productToRemove: CartProduct) {
+    if (user) {
+      try {
+        const response = await fetch(
+          `/api/shopping-cart/${productToRemove.productId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(productToRemove),
+          }
+        );
+        if (!response.ok) throw new Error('Failed to remove item from cart.');
+        loadCartFromServer();
+      } catch (error) {
+        setError(error);
+      }
+    } else {
+      setCart((oldCart) => {
+        const intermediateCart = oldCart.map((product) => {
+          if (
+            product.productId === productToRemove.productId &&
+            product.size === productToRemove.size
+          ) {
+            if (product.quantity > 1) {
+              return { ...product, quantity: product.quantity - 1 };
+            } else {
+              return { ...product, quantity: 0 };
+            }
+          }
+          return product;
+        });
+        const newCart = intermediateCart.filter(
+          (product) => product.quantity > 0
+        );
+        saveCart(newCart);
+        return newCart;
+      });
+    }
   }
 
   return (

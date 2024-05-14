@@ -151,14 +151,25 @@ export function Details() {
           <hr className="pb-3" />
         </div>
         <div className="mb-3">
-          <p className="pb-3">COLOR: {colors}</p>
-          {colors.map((color) => (
-            <FaCircle
-              key={color}
-              color={customColors[color]}
-              className="my-3"
-            />
-          ))}
+          <p className="pb-3">
+            COLOR:
+            {colors.map((color) => (
+              <span key={color} className="mx-1">
+                {color}{' '}
+              </span>
+            ))}
+          </p>
+          <div className="flex flex-row">
+            {colors.map((color) => (
+              <FaCircle
+                key={color}
+                color={customColors[color]}
+                stroke="black"
+                strokeWidth="17"
+                className="mx-2 my-3"
+              />
+            ))}
+          </div>
           <hr className="my-3" />
         </div>
         <div className="mb-2">
