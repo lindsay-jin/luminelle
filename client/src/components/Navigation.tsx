@@ -34,6 +34,7 @@ export function Navigation({ categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+  const [isCategoryHovered, setIsCategoryHovered] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useUser();
@@ -44,10 +45,12 @@ export function Navigation({ categories }: Props) {
 
   function handleMouseOver(categoryName: string) {
     setActiveCategory(categoryName);
+    setIsCategoryHovered(true);
   }
 
   function handleMouseLeave() {
     setActiveCategory(null);
+    setIsCategoryHovered(false);
   }
 
   function toggleSearch() {
@@ -65,7 +68,7 @@ export function Navigation({ categories }: Props) {
   return (
     <>
       <Shade
-        isVisible={isUserOpen || isCartOpen || isSearching}
+        isVisible={isUserOpen || isCartOpen || isSearching || isCategoryHovered}
         onClick={() => {
           if (isUserOpen) toggleUserMenu();
           if (isCartOpen) toggleCartMenu();

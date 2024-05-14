@@ -6,6 +6,7 @@ import { toDollars } from '../../lib/to-dollars';
 import { useWishlist } from '../components/useWishlist';
 import { useCart } from '../components/useCart';
 import { Product } from './Catalog';
+import { Shade } from '../components/Shade';
 
 export type ProductDetails = Product & {
   description: string;
@@ -102,9 +103,10 @@ export function Details() {
   }
 
   return (
-    <div className="flex pt-4 flex-col md:flex-row">
+    <div className="flex relative pt-4 flex-col md:flex-row">
+      <Shade isVisible={isOpen} onClick={() => setIsOpen(!isOpen)} />
       {isOpen && (
-        <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+        <div className="absolute right-0 bottom-0 md:top-0 md:-mt-14 h-[320px] md:h-full w-full md:w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
           <button className="mr-2 my-4 self-end underline" onClick={toggleMenu}>
             CLOSE
           </button>

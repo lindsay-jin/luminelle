@@ -56,7 +56,6 @@ export type cardProps = {
 export function CartCard({ product }: cardProps) {
   const { imageUrl, name, colors, size, quantity, price } = product;
   const { removeFromCart } = useCart();
-  // const imageString = imageUrl.toString();
 
   const isShoppingCart = location.pathname === '/shopping-cart';
 
@@ -77,7 +76,7 @@ export function CartCard({ product }: cardProps) {
           <p>Qty: {quantity}</p>
           <p>{toDollars(price)}</p>
         </div>
-        <div>
+        <div className="pb-8">
           <button
             className="underline font-medium"
             onClick={handleRemoveFromCart}>
