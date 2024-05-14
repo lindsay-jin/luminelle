@@ -102,7 +102,7 @@ export function Details() {
   }
 
   return (
-    <div className="flex pt-4">
+    <div className="flex pt-4 flex-col md:flex-row">
       {isOpen && (
         <div className="absolute right-0 top-0 h-full w-1/2 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
           <button className="mr-2 my-4 self-end underline" onClick={toggleMenu}>
@@ -121,7 +121,7 @@ export function Details() {
           </div>
         </div>
       )}
-      <div className="w-1/2 relative pr-10">
+      <div className="w-screen md:w-1/2 relative md:pr-10">
         {imageUrl.map((url, index) => (
           <div key={index} className="relative my-2">
             <img
@@ -144,7 +144,7 @@ export function Details() {
           </div>
         ))}
       </div>
-      <div className="fixed top-14 right-[-10px] w-1/2 flex flex-col pr-6">
+      <div className="md:fixed md:top-14 md:right-[-10px] md:w-1/2 w-full flex flex-col px-6 md:pr-6">
         <div className="mt-3 mb-3">
           <p className="py-3 text-xl">{name}</p>
           <p className="py-3">{toDollars(price)}</p>

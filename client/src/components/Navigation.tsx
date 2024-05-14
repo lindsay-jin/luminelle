@@ -83,12 +83,12 @@ export function Navigation({ categories }: Props) {
           </div>
         )}
         <nav
-          className={`relative flex justify-between px-5 ${
+          className={`relative flex justify-between px-5 items-baseline m-0 p-0 ${
             isHomePage ? '' : 'items-center'
           }`}>
           {!isHomePage && (
             <h1
-              className="text-3xl cursor-pointer"
+              className="text-2xl font-medium md:text-3xl md:font-normal cursor-pointer"
               onClick={() => navigate('/')}>
               LUMINELLE
             </h1>
@@ -142,6 +142,7 @@ export function Navigation({ categories }: Props) {
           <CartMenu isOpen={isCartOpen} toggleCartMenu={toggleCartMenu} />
         </nav>
       </div>
+      {!isHomePage && <hr className="my-3 border" />}
       <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>
         <Outlet />
       </div>

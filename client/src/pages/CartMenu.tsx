@@ -18,7 +18,7 @@ export function CartMenu({ toggleCartMenu, isOpen }: Props) {
   );
 
   return (
-    <div className="absolute right-0 top-0 h-screen overflow-y-auto w-1/2 px-10 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+    <div className="absolute right-0 top-0 h-screen overflow-y-auto w-full md:w-1/2 px-10 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
       <div className="flex justify-between my-5">
         <h2>YOUR SELECTION</h2>
         <button className="text-lg" onClick={toggleCartMenu}>
