@@ -18,7 +18,7 @@ export function CartMenu({ toggleCartMenu, isOpen }: Props) {
   );
 
   return (
-    <div className="absolute right-0 top-0 h-screen overflow-y-auto w-1/2 px-10 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+    <div className="absolute right-0 top-0 h-screen overflow-y-auto w-full md:w-1/2 px-10 flex flex-col bg-white z-50 transform transition-transform translate-x-0">
       <div className="flex justify-between my-5">
         <h2>YOUR SELECTION</h2>
         <button className="text-lg" onClick={toggleCartMenu}>
@@ -56,7 +56,6 @@ export type cardProps = {
 export function CartCard({ product }: cardProps) {
   const { imageUrl, name, colors, size, quantity, price } = product;
   const { removeFromCart } = useCart();
-  // const imageString = imageUrl.toString();
 
   const isShoppingCart = location.pathname === '/shopping-cart';
 
@@ -77,7 +76,7 @@ export function CartCard({ product }: cardProps) {
           <p>Qty: {quantity}</p>
           <p>{toDollars(price)}</p>
         </div>
-        <div>
+        <div className="pb-8">
           <button
             className="underline font-medium"
             onClick={handleRemoveFromCart}>

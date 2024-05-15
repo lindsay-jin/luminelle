@@ -341,7 +341,7 @@ export function ProductCard({
   }
 
   return (
-    <div className="flex flex-col w-1/4 mx-0.2 border border-transparent hover:border-gray-500">
+    <div className="flex flex-col w-1/2 md:w-1/4 mx-0.2 border border-transparent hover:border-gray-500">
       <div className="w-full relative">
         <Link to={`/p/${productId}`} onClick={onClick}>
           <img
@@ -352,12 +352,12 @@ export function ProductCard({
         </Link>
         {isLiked ? (
           <FaHeart
-            className="absolute top-5 right-5 cursor-pointer"
+            className="absolute top-2 right-2 text-base md:top-5 md:right-5 md:text-xl cursor-pointer"
             onClick={toggleWishlist}
           />
         ) : (
           <FaRegHeart
-            className="absolute top-5 right-5 cursor-pointer text-xl"
+            className="absolute top-2 right-2 text-base md:text-xl md:top-5 md:right-5 cursor-pointer text-xl"
             onClick={toggleWishlist}
           />
         )}

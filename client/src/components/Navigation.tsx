@@ -34,6 +34,7 @@ export function Navigation({ categories }: Props) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
+  const [isCategoryHovered, setIsCategoryHovered] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useUser();
@@ -44,10 +45,12 @@ export function Navigation({ categories }: Props) {
 
   function handleMouseOver(categoryName: string) {
     setActiveCategory(categoryName);
+    setIsCategoryHovered(true);
   }
 
   function handleMouseLeave() {
     setActiveCategory(null);
+    setIsCategoryHovered(false);
   }
 
   function toggleSearch() {
@@ -65,7 +68,7 @@ export function Navigation({ categories }: Props) {
   return (
     <>
       <Shade
-        isVisible={isUserOpen || isCartOpen || isSearching}
+        isVisible={isUserOpen || isCartOpen || isSearching || isCategoryHovered}
         onClick={() => {
           if (isUserOpen) toggleUserMenu();
           if (isCartOpen) toggleCartMenu();
@@ -83,12 +86,12 @@ export function Navigation({ categories }: Props) {
           </div>
         )}
         <nav
-          className={`relative flex justify-between px-5 ${
+          className={`relative flex justify-between px-5 items-baseline m-0 p-0 ${
             isHomePage ? '' : 'items-center'
           }`}>
           {!isHomePage && (
             <h1
-              className="text-3xl cursor-pointer"
+              className="text-2xl font-medium md:text-3xl md:font-normal cursor-pointer"
               onClick={() => navigate('/')}>
               LUMINELLE
             </h1>
@@ -142,7 +145,8 @@ export function Navigation({ categories }: Props) {
           <CartMenu isOpen={isCartOpen} toggleCartMenu={toggleCartMenu} />
         </nav>
       </div>
-      <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>
+      {!isHomePage && <hr className="my-3 border" />}
+      <div className={`${isHomePage ? 'mt-120' : 'md:mt-6'}`}>
         <Outlet />
       </div>
     </>

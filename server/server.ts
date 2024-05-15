@@ -137,6 +137,12 @@ app.get('/api/catalog', async (req, res, next) => {
     const params = [`%${searchQuery}%`];
     const result = await db.query(sql, params);
     const products = result.rows;
+    products.forEach((product) => {
+      product.sizes = JSON.parse(product.sizes);
+      product.materials = JSON.parse(product.materials);
+      product.colors = JSON.parse(product.colors);
+      product.imageUrl = JSON.parse(product.imageUrl);
+    });
     res.json(products);
   } catch (error) {
     next(error);
@@ -212,6 +218,12 @@ app.get('/api/wishlist', authMiddleware, async (req, res, next) => {
     if (wishlist.length === 0) {
       return res.status(200).json([]);
     }
+    wishlist.forEach((wishlistItem) => {
+      wishlistItem.sizes = JSON.parse(wishlistItem.sizes);
+      wishlistItem.materials = JSON.parse(wishlistItem.materials);
+      wishlistItem.colors = JSON.parse(wishlistItem.colors);
+      wishlistItem.imageUrl = JSON.parse(wishlistItem.imageUrl);
+    });
     res.status(200).json(wishlist);
   } catch (error) {
     next(error);

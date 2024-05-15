@@ -11,8 +11,8 @@ export function Cart() {
   );
 
   return (
-    <div className="flex m-5 pt-4">
-      <div className="bg-slate-100 w-2/3 mr-5">
+    <div className="flex flex-col md:flex-row m-5 pt-4">
+      <div className="bg-slate-100 w-full md:w-2/3 md:mr-5">
         <h2 className="ml-5 mt-3">
           {cart.length === 0 ? 'Shopping bag' : `Shopping bag(${cart.length})`}
         </h2>
@@ -27,12 +27,12 @@ export function Cart() {
           ))}
         </div>
       </div>
-      <div className="bg-slate-100 w-1/3 h-[120px]">
+      <div className="bg-slate-100 w-full md:w-1/3 md:h-[120px]">
         <div className="flex justify-between mt-5 mb-3 mx-5">
           <span>SUBTOTAL</span>
           <span>{toDollars(subtotal)}</span>
         </div>
-        <div className="bg-slate-100 flex justify-center mx-5">
+        <div className="bg-slate-100 flex justify-center mx-5 pb-5">
           <button className="border-solid bg-black text-white w-full h-9">
             PROCEED TO CHECKOUT
           </button>

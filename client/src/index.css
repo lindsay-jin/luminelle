@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 40px;
+}
