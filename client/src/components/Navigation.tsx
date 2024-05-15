@@ -146,7 +146,7 @@ export function Navigation({ categories }: Props) {
         </nav>
       </div>
       {!isHomePage && <hr className="my-3 border" />}
-      <div className={`${isHomePage ? 'mt-120' : 'mt-40'}`}>
+      <div className={`${isHomePage ? 'mt-120' : 'md:mt-6'}`}>
         <Outlet />
       </div>
     </>
