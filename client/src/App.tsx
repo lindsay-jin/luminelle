@@ -12,6 +12,7 @@ import { Cart } from './pages/Cart';
 import { UserProvider } from './components/UserContext';
 import { WishlistProvider } from './components/WishlistContext';
 import { CartProvider } from './components/CartContext';
+import { Footer } from './components/Footer';
 
 const categories = [
   {
@@ -55,6 +56,7 @@ export default function App() {
               <Route path="shopping-cart" element={<Cart />} />
             </Route>
           </Routes>
+          <Footer />
         </CartProvider>
       </WishlistProvider>
     </UserProvider>
