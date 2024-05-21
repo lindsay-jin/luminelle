@@ -134,12 +134,12 @@ export function Details() {
             {index === 0 &&
               (isLiked ? (
                 <FaHeart
-                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  className="absolute top-9 md:top-5 right-5 text-2xl cursor-pointer"
                   onClick={toggleWishlist}
                 />
               ) : (
                 <FaRegHeart
-                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  className="absolute top-9 md:top-5 right-5 text-2xl cursor-pointer"
                   onClick={toggleWishlist}
                 />
               ))}

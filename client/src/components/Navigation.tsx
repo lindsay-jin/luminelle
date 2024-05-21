@@ -92,6 +92,7 @@ export function Navigation({ categories }: Props) {
             LUMINELLE
           </h1>
         )}
+        {!isHomePage && <hr className="mt-3 border" />}
         <nav
           className={`relative flex justify-between px-1 md:px-5 items-baseline m-0 p-0 ${
             isHomePage ? '' : 'items-center'

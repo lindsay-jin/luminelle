@@ -15,7 +15,7 @@ export function CategoryMenu({
   handleMouseLeave,
 }: Props) {
   return (
-    <ul className="flex justify-center md:mt-4 md:mt-0">
+    <ul className="flex justify-center md:mt-0">
       {categories.map((category) => (
         <li
           key={category.name}
