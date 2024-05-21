@@ -85,17 +85,17 @@ export function Navigation({ categories }: Props) {
             </h1>
           </div>
         )}
+        {!isHomePage && (
+          <h1
+            className="text-6xl md:text-4xl md: font-medium text-center md:pl-4 md:text-left cursor-pointer"
+            onClick={() => navigate('/')}>
+            LUMINELLE
+          </h1>
+        )}
         <nav
-          className={`relative flex justify-between px-5 items-baseline m-0 p-0 ${
+          className={`relative flex justify-between px-1 md:px-5 items-baseline m-0 p-0 ${
             isHomePage ? '' : 'items-center'
           }`}>
-          {!isHomePage && (
-            <h1
-              className="text-2xl font-medium md:text-3xl md:font-normal cursor-pointer"
-              onClick={() => navigate('/')}>
-              LUMINELLE
-            </h1>
-          )}
           <CategoryMenu
             categories={categories}
             activeCategory={activeCategory}
@@ -145,7 +145,7 @@ export function Navigation({ categories }: Props) {
           <CartMenu isOpen={isCartOpen} toggleCartMenu={toggleCartMenu} />
         </nav>
       </div>
-      {!isHomePage && <hr className="my-3 border" />}
+      {!isHomePage && <hr className="mt-11 md:mt-7 border" />}
       <div className={`${isHomePage ? 'mt-120' : 'md:mt-6'}`}>
         <Outlet />
       </div>

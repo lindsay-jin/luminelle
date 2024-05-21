@@ -146,7 +146,7 @@ export function Details() {
           </div>
         ))}
       </div>
-      <div className="md:fixed md:top-14 md:right-[-10px] md:w-1/2 w-full flex flex-col px-6 md:pr-6">
+      <div className="md:fixed md:top-22 md:right-[-10px] md:w-1/2 w-full flex flex-col px-6 md:pr-6">
         <div className="mt-3 mb-3">
           <p className="py-3 text-xl">{name}</p>
           <p className="py-3">{toDollars(price)}</p>

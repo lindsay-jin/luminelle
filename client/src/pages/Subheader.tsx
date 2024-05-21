@@ -29,7 +29,7 @@ export function Subheader({ categories }: Props) {
         <hr className="my-3 border" />
         <ul className="flex mt-2 md:mt-4">
           {currentSubcategories.map((subcategory) => (
-            <li key={subcategory.name} className="pl-5 pr-9">
+            <li key={subcategory.name} className="pl-5 pr-5 md:pr-9">
               <Link
                 to={subcategory.path}
                 className={activeLink === subcategory.name ? 'font-medium' : ''}
