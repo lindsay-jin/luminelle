@@ -11,7 +11,7 @@ export function Wishlist() {
   return (
     <div className="mx-0.2 pt-3">
       <hr className="border" />
-      <h2 className="px-5 pt-3 text-lg font-normal">
+      <h2 className="px-5 pt-7 text-lg font-normal">
         {wishlist.length === 0 ? 'Wishlist' : `Wishlist(${wishlist.length})`}
       </h2>
       <div className="mb-3 flex flex-wrap">
