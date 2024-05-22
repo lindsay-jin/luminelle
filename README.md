@@ -12,7 +12,7 @@ A full stack Javascript application for shoppers who care about fabric materials
 - HTML
 - Tailwind CSS
 
-## Demo
+## Live site
 
 http://luminelle-dev.us-west-1.elasticbeanstalk.com/
 
