@@ -134,19 +134,19 @@ export function Details() {
             {index === 0 &&
               (isLiked ? (
                 <FaHeart
-                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  className="absolute top-9 md:top-5 right-5 text-2xl cursor-pointer"
                   onClick={toggleWishlist}
                 />
               ) : (
                 <FaRegHeart
-                  className="absolute top-5 right-5 text-2xl cursor-pointer"
+                  className="absolute top-9 md:top-5 right-5 text-2xl cursor-pointer"
                   onClick={toggleWishlist}
                 />
               ))}
           </div>
         ))}
       </div>
-      <div className="md:fixed md:top-14 md:right-[-10px] md:w-1/2 w-full flex flex-col px-6 md:pr-6">
+      <div className="md:fixed md:top-22 md:right-[-10px] md:w-1/2 w-full flex flex-col px-6 md:pr-6">
         <div className="mt-3 mb-3">
           <p className="py-3 text-xl">{name}</p>
           <p className="py-3">{toDollars(price)}</p>

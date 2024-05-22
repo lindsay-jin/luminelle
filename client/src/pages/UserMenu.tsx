@@ -19,7 +19,7 @@ export function UserMenu({
 
   if (!isOpen) return null;
   return (
-    <div className="absolute right-0 top-0 h-screen w-[200px] flex flex-col bg-white z-50 transform transition-transform translate-x-0">
+    <div className="absolute right-0 top-0 h-screen w-screen md:w-[200px] flex flex-col bg-white z-50 transform transition-transform translate-x-0">
       <div className="my-2 flex justify-end mr-7">
         <button onClick={toggleUserMenu} className="text-lg">
           X
