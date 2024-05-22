@@ -56,3 +56,8 @@ Tailwind CSS
     ```
     
 5. Start the project.
+
+    ```
+    npm run dev
+    
+    ```
