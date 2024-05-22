@@ -4,13 +4,17 @@ A full stack Javascript application for shoppers who care about fabric materials
 
 ## Technologies used
 
-React.js
-Node.js
-Express
-Typescript
-PostgreSQL
-HTML
-Tailwind CSS
+- React.js
+- Node.js
+- Express
+- Typescript
+- PostgreSQL
+- HTML
+- Tailwind CSS
+
+## Demo
+
+http://luminelle-dev.us-west-1.elasticbeanstalk.com/
 
 ## Features
 
