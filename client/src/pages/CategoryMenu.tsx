@@ -29,7 +29,8 @@ export function CategoryMenu({
                 <Link
                   key={subcategory.name}
                   to={subcategory.path}
-                  className="block px-4 py-2 focus:underline">
+                  className="block px-4 py-2 focus:underline"
+                  onClick={handleMouseLeave}>
                   {subcategory.name}
                 </Link>
               ))}
